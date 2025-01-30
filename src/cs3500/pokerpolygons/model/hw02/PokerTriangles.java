@@ -2,10 +2,19 @@ package cs3500.pokerpolygons.model.hw02;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 import static cs3500.pokerpolygons.model.hw02.EmptyCard.getEmptyCard;
 
 /**
@@ -65,7 +74,6 @@ class PokerTriangles implements PokerPolygons<PlayingCard> {
 
   }
 
-  //TODO: Decide whether to make this static and edit a current board or return a new one.
   /**
    * To implement the game board given a side length.
    * @param sideLength is the desired side length of the board.
@@ -89,14 +97,14 @@ class PokerTriangles implements PokerPolygons<PlayingCard> {
    * @return the total number of playable spaces on the board.
    */
   private int getTotalBoardSize() {
-    return (this.getSizeLength() + (this.getSizeLength() + 1)) / 2;
+    return (this.getSideLength() * (this.getSideLength() + 1)) / 2;
   }
 
   /**
    * A getter for the private final field sideLength, representing the game of the size.
    * @return this PokerTriangle's game size.
    */
-  private int getSizeLength() {
+  private int getSideLength() {
     return this.sideLength;
   }
 
@@ -224,7 +232,52 @@ class PokerTriangles implements PokerPolygons<PlayingCard> {
    */
   @Override
   public void startGame(List<PlayingCard> deck, boolean shuffle, int handSize) {
+    if (this.isGameStarted) {
+      throw new IllegalStateException("Game has already started.");
+    }
+    if (deck == null) {
+      throw new IllegalArgumentException("Deck is null.");
+    }
 
+    // Create a copy of the deck to prevent modification of the original list
+    ArrayList<PlayingCard> deckCopy = new ArrayList<>(deck);
+
+    // Validate that no card in the given deck is null
+    if (deckCopy.contains(null)) {
+      throw new IllegalArgumentException("Deck contains a null card.");
+    }
+
+    if (handSize <= 0) {
+      throw new IllegalArgumentException("Hand size must be positive.");
+    }
+
+    if (deckCopy.size() <= handSize + this.getTotalBoardSize()) {
+      throw new IllegalArgumentException("Deck size must be at least large enough to " +
+              "cover the hand and board fully: "
+              + (handSize + this.getTotalBoardSize()));
+    }
+
+    // Shuffle deckCopy if shuffle is enabled
+    if (shuffle) {
+      Collections.shuffle(deckCopy);
+    }
+
+    // Convert to Deque for internal use
+    this.deck = arrayListToDeque(deckCopy);
+
+    this.handSize = handSize;
+
+    // Initialize the player's hand by drawing the first `handSize` cards
+    this.hand = new ArrayList<>();
+    for (int i = 0; i < handSize; i++) {
+      this.hand.add(this.deck.removeFirst());
+    }
+
+    // Initialize the game board with empty cards
+    this.gameBoard = initializeGameBoard(this.sideLength);
+
+    // Mark the game as started after everything is set up
+    this.isGameStarted = true;
   }
 
   /**
@@ -277,7 +330,7 @@ class PokerTriangles implements PokerPolygons<PlayingCard> {
    */
   @Override
   public PlayingCard getCardAt(int row, int col) {
-    if (row < 0 || row >= this.getSizeLength() || col < 0 || col >= this.getSizeLength()) {
+    if (row < 0 || row >= this.getSideLength() || col < 0 || col >= this.getSideLength()) {
       throw new IllegalArgumentException("Row or column out of bounds: " + row + ", " + col);
     }
     return this.gameBoard[row][col];
@@ -298,7 +351,6 @@ class PokerTriangles implements PokerPolygons<PlayingCard> {
     return new ArrayList<>(this.hand);
   }
 
-  // TODO: Implement this method and JavaDoc
   /**
    * Returns the current score of the game. The rules of scoring are determined
    * by the implementation.
@@ -308,7 +360,38 @@ class PokerTriangles implements PokerPolygons<PlayingCard> {
    */
   @Override
   public int getScore() {
-    return 0;
+    if (!this.isGameStarted) {
+      throw new IllegalStateException("Game has not started.");
+    }
+    int totalScore = 0;
+
+    // Extract all valid hands from the game board
+    List<List<PlayingCard>> hands = this.extractHands();
+
+    // Iterate over each hand and determine its highest-scoring category
+    for (List<PlayingCard> hand : hands) {
+      if (isStraightFlush(hand)) {
+        totalScore += 75;
+      } else if (isFourOfAKind(hand)) {
+        totalScore += 50;
+      } else if (isFullHouse(hand)) {
+        totalScore += 25;
+      } else if (isFlush(hand)) {
+        totalScore += 20;
+      } else if (isStraight(hand)) {
+        totalScore += 15;
+      } else if (isThreeOfAKind(hand)) {
+        totalScore += 10;
+      } else if (isTwoPair(hand)) {
+        totalScore += 5;
+      } else if (isPair(hand)) {
+        totalScore += 2;
+      } else {
+        totalScore += 0; // High card case no points.
+      }
+    }
+
+    return totalScore;
   }
 
   /**
@@ -329,6 +412,180 @@ class PokerTriangles implements PokerPolygons<PlayingCard> {
     hands.add(getMainDiagonal());
 
     return hands;
+  }
+
+  /**
+   * To return all valid scoring rows that are greater than or equal to 5.
+   * @return all valid scoring rows
+   */
+  private List<List<PlayingCard>> getValidRows() {
+    List<List<PlayingCard>> validRows = new ArrayList<>();
+    for (int row = 0; row < sideLength; row++) {
+      if (this.gameBoard[row].length >= 5) { // Only store rows with 5+ cards
+        validRows.add(Arrays.asList(this.gameBoard[row]));
+      }
+    }
+    return validRows;
+  }
+
+  /**
+   * To return all valid scoring columns that are greater than or equal to 5.
+   * @return all valid scoring columns
+   */
+  private List<List<PlayingCard>> getValidColumns() {
+    List<List<PlayingCard>> validColumns = new ArrayList<>();
+    for (int col = 0; col < sideLength; col++) {
+      List<PlayingCard> columnHand = new ArrayList<>();
+      for (int row = col; row < sideLength; row++) { // Columns increase as rows go down
+        columnHand.add(this.gameBoard[row][col]);
+      }
+      if (columnHand.size() >= 5) {
+        validColumns.add(columnHand);
+      }
+    }
+    return validColumns;
+  }
+
+  /**
+   * To return the one valid outside diagonal.
+   * @return the valid outside diagonal.
+   */
+  private List<PlayingCard> getMainDiagonal() {
+    List<PlayingCard> mainDiagonal = new ArrayList<>();
+    for (int i = 0; i < sideLength; i++) {
+      mainDiagonal.add(this.gameBoard[i][i]);
+    }
+    return mainDiagonal;
+  }
+
+  /**
+   * Checks if the hand is a Straight Flush (5 cards of the same suit in sequence).
+   * @return whether the hand is a stright flush or not.
+   */
+  private boolean isStraightFlush(List<PlayingCard> hand) {
+    return isFlush(hand) && isStraight(hand);
+  }
+
+  /**
+   * Checks if the hand is a Four of a Kind (4 cards of the same rank).
+   * @return whether the hand is a four of a kind or not.
+   */
+  private boolean isFourOfAKind(List<PlayingCard> hand) {
+    Map<Ranks, Integer> rankCounts = getRankCounts(hand);
+    return rankCounts.containsValue(4);
+  }
+
+  /**
+   * Checks if the hand is a Full House (3 of one rank, 2 of another rank).
+   * @return whether the hand is a full house.
+   */
+  private boolean isFullHouse(List<PlayingCard> hand) {
+    Map<Ranks, Integer> rankCounts = getRankCounts(hand);
+    return rankCounts.containsValue(3) && rankCounts.containsValue(2);
+  }
+
+  /**
+   * Checks if the hand is a Flush (all 5 cards of the same suit).
+   * @return whether the hand is a flush.
+   */
+  private boolean isFlush(List<PlayingCard> hand) {
+    Suits firstSuit = hand.get(0).getSuit();
+    // If any card has a different suit, it's not a flush
+    for (PlayingCard card : hand) {
+      if (!card.getSuit().equals(firstSuit)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  /**
+   * Checks if the hand is a Straight (5 cards in numerical order).
+   * @return whether the hand is a straight
+   */
+  private boolean isStraight(List<PlayingCard> hand) {
+    List<Integer> values = new ArrayList<>();
+
+    // Extract rank values, considering Ace as both 1 and 14
+    for (PlayingCard card : hand) {
+      int rankValue = card.getRank().getValue();
+      values.add(rankValue);
+      if (rankValue == 1) { // If it's an Ace, add 14 too
+        values.add(card.getRank().getFourteenValue());
+      }
+    }
+
+    // Remove duplicates and sort the values
+    Set<Integer> uniqueValues = new TreeSet<>(values);
+    List<Integer> sortedValues = new ArrayList<>(uniqueValues);
+
+    // If there are less than 5 distinct values, it's not a straight
+    if (sortedValues.size() < 5) return false;
+
+    // Check if any 5 consecutive numbers form a straight
+    for (int i = 0; i <= sortedValues.size() - 5; i++) {
+      boolean isSequential = true;
+      for (int j = 0; j < 4; j++) {
+        if (sortedValues.get(i + j) + 1 != sortedValues.get(i + j + 1)) {
+          isSequential = false;
+          break;
+        }
+      }
+      if (isSequential) return true;
+    }
+
+    return false;
+  }
+
+
+  /**
+   * Checks if the hand is a Three of a Kind (3 cards of the same rank).
+   * @return whether this had is a 3 of a kind
+   */
+  private boolean isThreeOfAKind(List<PlayingCard> hand) {
+    Map<Ranks, Integer> rankCounts = getRankCounts(hand);
+    return rankCounts.containsValue(3);
+  }
+
+  /**
+   * Checks if the hand is a Two Pair (two different pairs).
+   * @
+   */
+  private boolean isTwoPair(List<PlayingCard> hand) {
+    Map<Ranks, Integer> rankCounts = getRankCounts(hand);
+    int pairCount = 0;
+
+    for (int count : rankCounts.values()) {
+      if (count == 2) {
+        pairCount++;
+      }
+    }
+
+    return pairCount == 2;
+  }
+
+  /**
+   * Checks if the hand is a Pair (only one pair).
+   * @return whether this hand has a single pair.
+   */
+  private boolean isPair(List<PlayingCard> hand) {
+    Map<Ranks, Integer> rankCounts = getRankCounts(hand);
+    return rankCounts.containsValue(2);
+  }
+
+
+
+
+  /**
+   * Utility method to count occurrences of each rank in a hand
+   * with a hashmap structure.
+   */
+  private Map<Ranks, Integer> getRankCounts(List<PlayingCard> hand) {
+    Map<Ranks, Integer> rankCounts = new HashMap<>();
+    for (PlayingCard card : hand) {
+      rankCounts.put(card.getRank(), rankCounts.getOrDefault(card.getRank(), 0) + 1);
+    }
+    return rankCounts;
   }
 
 

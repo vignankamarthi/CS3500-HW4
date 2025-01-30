@@ -8,4 +8,16 @@ public interface PlayingCard extends Card {
   @Override
   String toString();
 
+  /**
+   * To get the rank of this Playing Card.
+   * @return this Playing Card's rank.
+   */
+  public Ranks getRank();
+
+  /**
+   * To get the suit of this Playing Card.
+   * @return this Playing Card's suit.
+   */
+  public Suits getSuit();
+
 }

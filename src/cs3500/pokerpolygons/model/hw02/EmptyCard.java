@@ -29,6 +29,26 @@ public class EmptyCard implements PlayingCard {
   }
 
   /**
+   * To get the rank of this Playing Card.
+   *
+   * @return this Playing Card's rank.
+   */
+  @Override
+  public Ranks getRank() {
+    return null;
+  }
+
+  /**
+   * To get the suit of this Playing Card.
+   *
+   * @return this Playing Card's suit.
+   */
+  @Override
+  public Suits getSuit() {
+    return null;
+  }
+
+  /**
    * All Empty slots are equal to one-another.
    * @return true for all comparisons of an empty card.
    */

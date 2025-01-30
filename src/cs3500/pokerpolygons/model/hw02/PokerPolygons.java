@@ -83,7 +83,7 @@ public interface PokerPolygons<C extends Card> {
    * @param col the column to access
    * @return the card in the valid position or null if the position has no card
    * @throws IllegalArgumentException if the row and column are not a valid location
-   *     for a card in the polygonal board
+   *         for a card in the polygonal board
    */
   C getCardAt(int row, int col);
 

@@ -40,6 +40,24 @@ public enum Ranks {
   }
 
   /**
+   * To get the value of each rank. Here,
+   * Ace defaults to 1.
+   * @return this ranks value
+   */
+  public int getValue() {
+    return this.oneValue;
+  }
+
+  /**
+   * To get the value of the ace as a value of 14.
+   * @return this Ace's 14 value.
+   */
+  public int getFourteenValue() {
+    return this.fourteenValue;
+  }
+
+
+  /**
    * To return the String value of the rank.
    */
   @Override
