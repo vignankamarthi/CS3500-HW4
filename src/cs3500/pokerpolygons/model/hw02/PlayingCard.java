@@ -5,6 +5,13 @@ package cs3500.pokerpolygons.model.hw02;
  */
 public interface PlayingCard extends Card {
 
+  /**
+   * Renders a card with its value followed by its suit as one of
+   * the following symbols (♣, ♠, ♡, ♢).
+   * For example, the 3 of Hearts is rendered as {@code "3♡"}.
+   *
+   * @return the formatted card
+   */
   @Override
   String toString();
 

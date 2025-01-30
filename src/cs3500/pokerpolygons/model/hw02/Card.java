@@ -11,6 +11,7 @@ package cs3500.pokerpolygons.model.hw02;
  * this one and exposes those behaviors.
  */
 public interface Card {
+
   /**
    * Renders a card with its value followed by its suit as one of
    * the following symbols (♣, ♠, ♡, ♢).

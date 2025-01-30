@@ -42,4 +42,19 @@ public class StandardPlayingCard implements PlayingCard {
   public String toString() {
     return this.rank.toString() + this.suit.toString();
   }
+
+  /**
+   * To establish equality of two cards.
+   * @param obj is any object.
+   * @return whether obj is equal to this StandardPlayingCard.
+   */
+  @Override
+  public boolean equals(Object obj) {
+    if (!(obj instanceof StandardPlayingCard)) {
+      return false;
+    }
+    StandardPlayingCard that = (StandardPlayingCard) obj;
+
+    return this.rank.equals(that.rank) && this.suit.equals(that.suit);
+  }
 }
