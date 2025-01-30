@@ -1,15 +1,107 @@
 package cs3500.pokerpolygons.model.hw02;
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
+import java.util.Objects;
+import java.util.Random;
+import static cs3500.pokerpolygons.model.hw02.EmptyCard.getEmptyCard;
 
 /**
  * To represent a PokerSquares type game in the shape of an equilateral, right triangle.
  */
 class PokerTriangles implements PokerPolygons<PlayingCard> {
 
-  // TODO: Implement this method and JavaDoc
+  private Deque<PlayingCard> deck;
+  private boolean shuffle;
+  private int handSize;
+  private ArrayList<PlayingCard> hand;
+  private boolean isGameStarted;
+  private final int sideLength;
+  private Random randomizer;
+  private PlayingCard[][] gameBoard;
+
   /**
-   * Places a card from the hand to a given position on the polygonal board and then
+   * A constructor to create an instance of a PokerTriangle game
+   * with only the side.
+   * @param sideLength is the length of the sides of the right equilateral triangle.
+   * @throws IllegalArgumentException if the side length is less than 5.
+   *
+   */
+  public PokerTriangles(int sideLength) {
+    if (sideLength < 5) {
+      throw new IllegalArgumentException("Side length must be at least 5: " + sideLength);
+    }
+
+    this.shuffle = false;
+    this.isGameStarted = false;
+    this.sideLength = sideLength;
+    this.randomizer = new Random();
+  }
+
+
+  /**
+   * A constructor to create an instance of a PokerTriangle game with
+   * a random object to seed random operations.
+   * with only the side.
+   * @param sideLength is the length of the sides of the right equilateral triangle.
+   * @throws IllegalArgumentException if the side length is less than 5.
+   * @throws IllegalArgumentException if the Randomizer is null.
+   *
+   */
+  public PokerTriangles(int sideLength, Random randomizer) {
+    if (sideLength < 5) {
+      throw new IllegalArgumentException("Side length must be at least 5: " + sideLength);
+    }
+    if (randomizer == null) {
+      throw new IllegalArgumentException("Randomizer cannot be null.");
+    }
+
+    this.shuffle = false;
+    this.isGameStarted = false;
+    this.sideLength = sideLength;
+    this.randomizer = randomizer;
+
+  }
+
+  //TODO: Decide whether to make this static and edit a current board or return a new one.
+  /**
+   * To implement the game board given a side length.
+   * @param sideLength is the desired side length of the board.
+   * @return an initialized game board given the side length with
+   *         all empty cards.
+   */
+  private PlayingCard[][] initializeGameBoard(int sideLength) {
+    PlayingCard[][] gameBoard = new PlayingCard[sideLength][];
+    for (int row = 0; row < sideLength; row++) {
+      gameBoard[row] = new PlayingCard[row + 1];
+      for (int col = 0; col <= row; col++) {
+        gameBoard[row][col] = getEmptyCard();
+      }
+    }
+    return gameBoard;
+  }
+
+
+  /**
+   * Returns the total number of cells playable in this PokerTriangles.
+   * @return the total number of playable spaces on the board.
+   */
+  private int getTotalBoardSize() {
+    return (this.getSizeLength() + (this.getSizeLength() + 1)) / 2;
+  }
+
+  /**
+   * A getter for the private final field sideLength, representing the game of the size.
+   * @return this PokerTriangle's game size.
+   */
+  private int getSizeLength() {
+    return this.sideLength;
+  }
+
+  /**
+   * Places a card from the hand to a given position on the equilateral right triangle board and then
    * draws a card from the deck if able.
    *
    * @param cardIdx index of the card in hand to place (0-index based)
@@ -22,10 +114,47 @@ class PokerTriangles implements PokerPolygons<PlayingCard> {
    */
   @Override
   public void placeCardInPosition(int cardIdx, int row, int col) {
+    if (!this.isGameStarted) {
+      throw new IllegalStateException("Game has not started.");
+    }
+    if (outOfBounds(row, col, this.gameBoard) == true) {
+      throw new IllegalStateException("Out of bounds of the game board: " + row + ", " + col);
+    }
+    if (hasCardInPosition(row, col, this.gameBoard) == true) {
+      throw new IllegalStateException("Given position already has a card.");
+    }
+    if (cardIdx >= this.handSize || cardIdx < 0) {
+      throw new IllegalArgumentException("Card index out of bounds of the hand: " + cardIdx);
+    }
+
+    // Place desired card in deck to desired position.
+    this.gameBoard[row][col] = this.hand.remove(cardIdx);
+
+    // Draw from the deck into the hand.
+    if (!this.deck.isEmpty()) {
+      this.hand.add(cardIdx, this.deck.removeFirst());
+    }
 
   }
 
-  // TODO: Implement this method and JavaDoc
+  /**
+   * To determine if the given position is out of bounds.
+   * @return whether the given position is out of the given game board.
+   */
+  private static boolean outOfBounds(int row, int col, PlayingCard[][] gameBoard) {
+    return gameBoard[row][col] == null;
+  }
+
+  /**
+   * To determine if there is a card already places at this position.
+   * @return whether there is a card in this position or not.
+   */
+  private static boolean hasCardInPosition(int row, int col, PlayingCard[][] gameBoard) {
+    return gameBoard[row][col].equals(getEmptyCard());
+  }
+
+
+
   /**
    * Discards the specified card from the hand, but only if the player can also draw a new card
    * and there are enough cards between the remaining deck and hand to fill the remaining empty
@@ -37,7 +166,43 @@ class PokerTriangles implements PokerPolygons<PlayingCard> {
    */
   @Override
   public void discardCard(int cardIdx) {
+    if (!this.isGameStarted) {
+      throw new IllegalStateException("Game has not started.");
+    }
+    if (this.hand.size() < 0) {
+      throw new IllegalStateException("Hand is empty.");
+    }
+    if (cardIdx >= this.handSize || cardIdx < 0) {
+      throw new IllegalArgumentException("Card index out of bounds of the hand: " + cardIdx);
+    }
 
+    ArrayList<PlayingCard> temp = new ArrayList<>();
+    temp = dequeToArrayList(this.deck);
+    temp.remove(cardIdx);
+    this.deck = arrayListToDeque(temp);
+
+  }
+
+  /**
+   * A helper method to convert the given deck from a Deque to an ArrayList
+   */
+  private ArrayList<PlayingCard> dequeToArrayList(Deque<PlayingCard> deck) {
+    ArrayList<PlayingCard> convertedDeck = new ArrayList<>();
+    for (PlayingCard card : deck) {
+      convertedDeck.add(card);
+    }
+    return convertedDeck;
+  }
+
+  /**
+   * A helper method to convert the given deck from an ArrayList to a Deque
+   */
+  private Deque<PlayingCard> arrayListToDeque(ArrayList<PlayingCard> deck) {
+    Deque<PlayingCard> convertedDeck = new ArrayDeque<>();
+    for (PlayingCard card : deck) {
+      convertedDeck.add(card);
+    }
+    return convertedDeck;
   }
 
   // TODO: Implement this method and JavaDoc
@@ -62,31 +227,28 @@ class PokerTriangles implements PokerPolygons<PlayingCard> {
 
   }
 
-  // TODO: Implement this method and JavaDoc
   /**
-   * Retrieve the number of cards that make up the width of the rectangle
+   * Retrieve the number of cards that make up the width of the triangle.
    * that contains the polygon. (e.g. the number of columns in the widest row)
    *
-   * @return the width of the board
+   * @return the width of the game board.
    */
   @Override
   public int getWidth() {
-    return 0;
+    return sideLength;
   }
 
-  // TODO: Implement this method and JavaDoc
   /**
-   * Retrieve the number of cards that make up the height of the rectangle
-   * that contains the polygon. (e.g. the number of rows in the highest column)
+   * Retrieve the number of cards that make up the height of the triangle.
+   * that contains the triangle. (e.g. the number of rows in the highest column)
    *
-   * @return the height of the board
+   * @return the height of the board.
    */
   @Override
   public int getHeight() {
-    return 0;
+    return sideLength;
   }
 
-  // TODO: Implement this method and JavaDoc
   /**
    * Creates a brand new deck of all 52 possible cards.
    *
@@ -94,10 +256,15 @@ class PokerTriangles implements PokerPolygons<PlayingCard> {
    */
   @Override
   public List<PlayingCard> getNewDeck() {
-    return List.of();
+    List<PlayingCard> defaultDeck = new ArrayList<PlayingCard>();
+    for (Ranks rank : Ranks.values()) {
+      for (Suits suit : Suits.values()) {
+        defaultDeck.add(new StandardPlayingCard(rank, suit));
+      }
+    }
+    return defaultDeck;
   }
 
-  // TODO: Implement this method and JavaDoc
   /**
    * Returns the card in the indicated position on the board. If there is no card on the board
    * and the position is valid, the method will return null.
@@ -110,10 +277,12 @@ class PokerTriangles implements PokerPolygons<PlayingCard> {
    */
   @Override
   public PlayingCard getCardAt(int row, int col) {
-    return null;
+    if (row < 0 || row >= this.getSizeLength() || col < 0 || col >= this.getSizeLength()) {
+      throw new IllegalArgumentException("Row or column out of bounds: " + row + ", " + col);
+    }
+    return this.gameBoard[row][col];
   }
 
-  // TODO: Implement this method and JavaDoc
   /**
    * Returns a copy of the player's current hand. If their hand is empty, then an empty
    * list is returned.
@@ -123,7 +292,10 @@ class PokerTriangles implements PokerPolygons<PlayingCard> {
    */
   @Override
   public List<PlayingCard> getHand() {
-    return List.of();
+    if (!this.isGameStarted) {
+      throw new IllegalStateException("Game has not started.");
+    }
+    return new ArrayList<>(this.hand);
   }
 
   // TODO: Implement this method and JavaDoc
@@ -139,7 +311,28 @@ class PokerTriangles implements PokerPolygons<PlayingCard> {
     return 0;
   }
 
-  // TODO: Implement this method and JavaDoc
+  /**
+   * To extract the hands valid for scoring from the game board. That includes
+   * all 3 sides, and any hands that has 5 or more cards.
+   * @return a list of hands that are valid for scoring from the game board.
+   */
+  private List<List<PlayingCard>> extractHands() {
+    List<List<PlayingCard>> hands = new ArrayList<>();
+
+    // Adding all valid rows (including the last row automatically)
+    hands.addAll(getValidRows());
+
+    // Adding all valid columns (including the first column automatically)
+    hands.addAll(getValidColumns());
+
+    // Adding the main diagonal (always valid)
+    hands.add(getMainDiagonal());
+
+    return hands;
+  }
+
+
+
   /**
    * Returns the number of cards left in the deck being used during the game.
    *
@@ -148,7 +341,10 @@ class PokerTriangles implements PokerPolygons<PlayingCard> {
    */
   @Override
   public int getRemainingDeckSize() {
-    return 0;
+    if (!this.isGameStarted) {
+      throw new IllegalStateException("Game has not started.");
+    }
+    return this.deck.size();
   }
 
   // TODO: Implement this method and JavaDoc
