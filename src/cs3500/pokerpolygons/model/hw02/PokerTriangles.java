@@ -17,7 +17,7 @@ import static cs3500.pokerpolygons.model.hw02.EmptyCard.getEmptyCard;
 /**
  * To represent a PokerSquares type game in the shape of an equilateral, right triangle.
  */
-class PokerTriangles implements PokerPolygons<PlayingCard> {
+public class PokerTriangles implements PokerPolygons<PlayingCard> {
 
   private Deque<PlayingCard> deck;
   private boolean shuffle;
@@ -210,7 +210,6 @@ class PokerTriangles implements PokerPolygons<PlayingCard> {
     return convertedDeck;
   }
 
-  // TODO: Implement this method and JavaDoc
   /**
    * Starts the game with the given deck and hand size. If shuffle is set to true,
    * then the deck is shuffled prior to dealing the hand.
@@ -601,7 +600,6 @@ class PokerTriangles implements PokerPolygons<PlayingCard> {
     return this.deck.size();
   }
 
-  // TODO: Implement this method and JavaDoc
   /**
    * Returns true if the game is over. The implementation must
    * describe what it means for the game to be over.
@@ -611,6 +609,18 @@ class PokerTriangles implements PokerPolygons<PlayingCard> {
    */
   @Override
   public boolean isGameOver() {
-    return false;
+    if (!this.isGameStarted) {
+      throw new IllegalStateException("Game has not started.");
+    }
+
+    for (int row = 0; row < this.sideLength; row++) {
+      for (int col = 0; col <= row; col++) {
+        if (this.gameBoard[row][col].equals(EmptyCard.getEmptyCard())) {
+          return false;
+        }
+      }
+    }
+
+    return true;
   }
 }
