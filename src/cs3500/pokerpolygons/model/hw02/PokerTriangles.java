@@ -150,12 +150,13 @@ public class PokerTriangles implements PokerPolygons<PlayingCard> {
     return gameBoard[row][col] == null;
   }
 
+  // TODO: Fix this method to align with the old represnetation
   /**
    * To determine if there is a card already places at this position.
    * @return whether there is a card in this position or not.
    */
   private static boolean hasCardInPosition(int row, int col, PlayingCard[][] gameBoard) {
-    return gameBoard[row][col].equals(getEmptyCard());
+    return gameBoard[row][col] != null;
   }
 
 
@@ -321,6 +322,7 @@ public class PokerTriangles implements PokerPolygons<PlayingCard> {
    * @throws IllegalArgumentException if the row and column are not a valid location
    *                                  for a card in the polygonal board
    */
+  //TODO: Fix to represent old represntatiopn
   @Override
   public PlayingCard getCardAt(int row, int col) {
     if (row < 0 || row >= this.getSideLength() || col < 0 || col > row) {

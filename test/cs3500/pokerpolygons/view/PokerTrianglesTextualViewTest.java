@@ -3,7 +3,7 @@ package cs3500.pokerpolygons.view;
 import cs3500.pokerpolygons.model.hw02.*;
 import org.junit.Before;
 import org.junit.Test;
-
+//TODO: Create a full testing environment.
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;

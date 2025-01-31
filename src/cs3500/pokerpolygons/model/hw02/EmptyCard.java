@@ -1,56 +1,41 @@
 package cs3500.pokerpolygons.model.hw02;
-
+//TODO: Create tests
 /**
- * Utilizing a sentinel type pattern to represent an empty card for better scalability.
+ * Singleton representation of an empty card for an unoccupied board position.
  */
-public class EmptyCard implements PlayingCard {
-  // Creating the empty object as a global variable of the class.
+public class EmptyCard extends AbstractPlayingCard {
   private static final EmptyCard EMPTY = new EmptyCard();
 
   /**
-   * Private constructor to enforce the singleton pattern,
-   * where every instance provides access to a global constant.
-   *
+   * Private constructor to enforce the singleton pattern.
    */
-  private EmptyCard() {}
+  private EmptyCard() {
+    super(null, null); // Empty cards have no rank or suit
+  }
 
-
+  /**
+   * Provides access to the singleton instance of an empty card.
+   *
+   * @return the singleton instance of EmptyCard
+   */
   public static EmptyCard getEmptyCard() {
     return EMPTY;
   }
 
   /**
-   * To represent an empty board.
-   * @return the string representation of an empty slot.
+   * Represents an empty board slot as a string.
+   *
+   * @return the string representation of an empty slot
    */
   @Override
   public String toString() {
-    return " __";
+    return "__";
   }
 
   /**
-   * To get the rank of this Playing Card.
+   * Defines equality for empty cards.
    *
-   * @return this Playing Card's rank.
-   */
-  @Override
-  public Ranks getRank() {
-    return null;
-  }
-
-  /**
-   * To get the suit of this Playing Card.
-   *
-   * @return this Playing Card's suit.
-   */
-  @Override
-  public Suits getSuit() {
-    return null;
-  }
-
-  /**
-   * All Empty slots are equal to one-another.
-   * @return true for all comparisons of an empty card.
+   * @return true for all comparisons with another empty card
    */
   @Override
   public boolean equals(Object obj) {
@@ -58,8 +43,9 @@ public class EmptyCard implements PlayingCard {
   }
 
   /**
-   * All empty cards have the same hashcode conversion.
-   * @return the hashcode conversion of a card.
+   * Provides a constant hash code for all empty cards.
+   *
+   * @return 0 as the hashcode value
    */
   @Override
   public int hashCode() {

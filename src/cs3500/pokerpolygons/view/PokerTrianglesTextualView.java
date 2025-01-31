@@ -3,7 +3,8 @@ package cs3500.pokerpolygons.view;
 import cs3500.pokerpolygons.model.hw02.Card;
 import cs3500.pokerpolygons.model.hw02.PokerPolygons;
 import java.util.List;
-
+//TODO: Refactorfor empty card
+//TODO: Create Tests
 /**
  * A String type view of a PokerTriangles game.
  */
