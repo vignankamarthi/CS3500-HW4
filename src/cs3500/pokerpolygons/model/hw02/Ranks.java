@@ -62,11 +62,12 @@ public enum Ranks {
    */
   @Override
   public String toString() {
-    if (this == ACE) {
-      return "A";
-    }
-    else {
-      return String.valueOf(this.oneValue);
+    switch (this) {
+      case JACK: return "J";
+      case QUEEN: return "Q";
+      case KING: return "K";
+      case ACE: return "A";
+      default: return String.valueOf(this.oneValue);
     }
   }
 

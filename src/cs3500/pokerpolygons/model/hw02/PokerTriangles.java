@@ -235,10 +235,9 @@ public class PokerTriangles implements PokerPolygons<PlayingCard> {
       throw new IllegalArgumentException("Deck is null.");
     }
 
-    // Create a copy of the deck to prevent modification of the original list
-    ArrayList<PlayingCard> deckCopy = new ArrayList<>(deck);
+    // Make a copy of the deck so that the original deck passed in is NOT modified
+    List<PlayingCard> deckCopy = new ArrayList<>(deck);
 
-    // Validate that no card in the given deck is null
     if (deckCopy.contains(null)) {
       throw new IllegalArgumentException("Deck contains a null card.");
     }
@@ -247,27 +246,22 @@ public class PokerTriangles implements PokerPolygons<PlayingCard> {
       throw new IllegalArgumentException("Hand size must be positive.");
     }
 
-    if (deckCopy.size() <= handSize + this.getTotalBoardSize()) {
+    if (deckCopy.size() < handSize + this.getTotalBoardSize()) {
       throw new IllegalArgumentException("Deck size must be at least large enough to " +
-              "cover the hand and board fully: "
-              + (handSize + this.getTotalBoardSize()));
+              "cover the hand and board fully: " + (handSize + this.getTotalBoardSize()));
     }
 
-    // Shuffle deckCopy if shuffle is enabled
     if (shuffle) {
-      Collections.shuffle(deckCopy);
+      Collections.shuffle(deckCopy, this.randomizer);
     }
-
-    // Convert to Deque for internal use
-    this.deck = arrayListToDeque(deckCopy);
 
     this.handSize = handSize;
 
-    // Initialize the player's hand by drawing the first `handSize` cards
-    this.hand = new ArrayList<>();
-    for (int i = 0; i < handSize; i++) {
-      this.hand.add(this.deck.removeFirst());
-    }
+    // Take the first `handSize` cards for the hand (without modifying the original deck copy)
+    this.hand = new ArrayList<>(deckCopy.subList(0, handSize));
+
+    // The deck should remain a full copy (not removing first 5 cards)
+    this.deck = new ArrayDeque<>(deckCopy); // Full deck retained
 
     // Initialize the game board with empty cards
     this.gameBoard = initializeGameBoard(this.sideLength);
@@ -305,9 +299,12 @@ public class PokerTriangles implements PokerPolygons<PlayingCard> {
    */
   @Override
   public List<PlayingCard> getNewDeck() {
-    List<PlayingCard> defaultDeck = new ArrayList<PlayingCard>();
+    List<PlayingCard> defaultDeck = new ArrayList<>();
     for (Ranks rank : Ranks.values()) {
       for (Suits suit : Suits.values()) {
+        if (suit == Suits.EMPTY) {  // SKIP EMPTY SUIT
+          continue;
+        }
         defaultDeck.add(new StandardPlayingCard(rank, suit));
       }
     }
@@ -326,10 +323,13 @@ public class PokerTriangles implements PokerPolygons<PlayingCard> {
    */
   @Override
   public PlayingCard getCardAt(int row, int col) {
-    if (row < 0 || row >= this.getSideLength() || col < 0 || col >= this.getSideLength()) {
+    if (row < 0 || row >= this.getSideLength() || col < 0 || col > row) {
       throw new IllegalArgumentException("Row or column out of bounds: " + row + ", " + col);
     }
-    return this.gameBoard[row][col];
+
+    PlayingCard card = this.gameBoard[row][col];
+
+    return card.equals(EmptyCard.getEmptyCard()) ? null : card; // Return null instead of EmptyCard
   }
 
   /**
