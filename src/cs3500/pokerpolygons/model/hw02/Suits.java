@@ -2,14 +2,13 @@ package cs3500.pokerpolygons.model.hw02;
 
 /**
  * Represents the 4 suits in a standard deck of playing cards and
- * distinguishes between red and black suits.
+ * distinguishes between red and black suits. as well as an empty suit
  */
 public enum Suits {
   CLUBS('♣', "Black"),
   DIAMONDS('♢', "Red"),
   HEARTS('♡', "Red"),
-  SPADES('♠', "Black"),
-  EMPTY('e', "empty");
+  SPADES('♠', "Black");
 
   private final char symbol;
   private final String color;

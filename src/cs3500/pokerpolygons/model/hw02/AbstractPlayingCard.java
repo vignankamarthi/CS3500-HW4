@@ -1,10 +1,11 @@
 package cs3500.pokerpolygons.model.hw02;
-//TODO: Create Tests
+
 /**
  * An abstract class representing a playing card, encapsulating common attributes
  * and behaviors shared by all playing cards.
  */
 public abstract class AbstractPlayingCard implements PlayingCard {
+
   protected final Ranks rank;
   protected final Suits suit;
 

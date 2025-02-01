@@ -1,5 +1,5 @@
 package cs3500.pokerpolygons.model.hw02;
-//TODO: Create tests
+
 /**
  * Singleton representation of an empty card for an unoccupied board position.
  */

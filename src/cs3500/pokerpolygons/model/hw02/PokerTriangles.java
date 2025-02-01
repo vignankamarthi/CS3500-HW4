@@ -2,8 +2,8 @@ package cs3500.pokerpolygons.model.hw02;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
@@ -98,6 +98,23 @@ public class PokerTriangles implements PokerPolygons<PlayingCard> {
   }
 
   /**
+   * A helper method to return the number of playable spots left.
+   * @return the number of playable spots left on the game board.
+   */
+  private int getPlayableSpots() {
+    int count = 0;
+    for (int row = 0; row < this.sideLength; row++) {
+      for (int col = 0; col <= row; col++) {
+        if ((this.gameBoard[row][col] != null)
+                && this.gameBoard[row][col].equals(EmptyCard.getEmptyCard())) {
+          count++;
+        }
+      }
+    }
+    return count;
+  }
+
+  /**
    * A getter for the private final field sideLength, representing the game of the size.
    * @return this PokerTriangle's game size.
    */
@@ -106,8 +123,8 @@ public class PokerTriangles implements PokerPolygons<PlayingCard> {
   }
 
   /**
-   * Places a card from the hand to a given position on the equilateral right triangle board and then
-   * draws a card from the deck if able.
+   * Places a card from the hand to a given position on the equilateral right triangle
+   * board and then draws a card from the deck if able.
    *
    * @param cardIdx index of the card in hand to place (0-index based)
    * @param row     row to place the card in (0-index based)
@@ -122,14 +139,17 @@ public class PokerTriangles implements PokerPolygons<PlayingCard> {
     if (!this.isGameStarted) {
       throw new IllegalStateException("Game has not started.");
     }
-    if (outOfBounds(row, col, this.gameBoard) == true) {
-      throw new IllegalStateException("Out of bounds of the game board: " + row + ", " + col);
-    }
-    if (hasCardInPosition(row, col, this.gameBoard) == true) {
-      throw new IllegalStateException("Given position already has a card.");
-    }
     if (cardIdx >= this.handSize || cardIdx < 0) {
-      throw new IllegalArgumentException("Card index out of bounds of the hand: " + cardIdx);
+      throw new IllegalArgumentException("Card index in the hand is out of bounds: " + cardIdx);
+    }
+    if (row < 0 || col < 0) { // Explicitly check for negative values
+      throw new IllegalArgumentException("Row and column indices must be non-negative.");
+    }
+    if (outOfBounds(row, col, this.gameBoard)) {
+      throw new IllegalArgumentException("Out of bounds of the game board: " + row + ", " + col);
+    }
+    if (hasCardInPosition(row, col, this.gameBoard)) {
+      throw new IllegalArgumentException("Given position already has a card.");
     }
 
     // Place desired card in deck to desired position.
@@ -137,7 +157,7 @@ public class PokerTriangles implements PokerPolygons<PlayingCard> {
 
     // Draw from the deck into the hand.
     if (!this.deck.isEmpty()) {
-      this.hand.add(cardIdx, this.deck.removeFirst());
+      this.hand.add(this.deck.removeFirst());
     }
 
   }
@@ -150,13 +170,12 @@ public class PokerTriangles implements PokerPolygons<PlayingCard> {
     return gameBoard[row][col] == null;
   }
 
-  // TODO: Fix this method to align with the old represnetation
   /**
    * To determine if there is a card already places at this position.
    * @return whether there is a card in this position or not.
    */
   private static boolean hasCardInPosition(int row, int col, PlayingCard[][] gameBoard) {
-    return gameBoard[row][col] != null;
+    return !gameBoard[row][col].equals(EmptyCard.getEmptyCard());
   }
 
 
@@ -175,40 +194,35 @@ public class PokerTriangles implements PokerPolygons<PlayingCard> {
     if (!this.isGameStarted) {
       throw new IllegalStateException("Game has not started.");
     }
-    if (this.hand.size() < 0) {
+    // Ensure there are enough cards to continue playing
+    if (this.deck.size() + this.hand.size() - 1 < this.getPlayableSpots()) {
+      throw new IllegalStateException("Not enough cards left to discard and continue playing.");
+    }
+    if (this.hand.isEmpty()) {
       throw new IllegalStateException("Hand is empty.");
     }
-    if (cardIdx >= this.handSize || cardIdx < 0) {
+    if (cardIdx >= this.hand.size() || cardIdx < 0) {
       throw new IllegalArgumentException("Card index out of bounds of the hand: " + cardIdx);
     }
 
-    ArrayList<PlayingCard> temp = new ArrayList<>();
-    temp = dequeToArrayList(this.deck);
-    temp.remove(cardIdx);
-    this.deck = arrayListToDeque(temp);
 
+    // Remove the selected card from the hand
+    this.hand.remove(cardIdx);
+
+    this.hand.add(this.deck.removeFirst());
   }
 
   /**
-   * A helper method to convert the given deck from a Deque to an ArrayList
+   * To help return an encapsulated version of the hand.
+   * @return a new copy of this hand
+   *
    */
-  private ArrayList<PlayingCard> dequeToArrayList(Deque<PlayingCard> deck) {
-    ArrayList<PlayingCard> convertedDeck = new ArrayList<>();
-    for (PlayingCard card : deck) {
-      convertedDeck.add(card);
+  private  ArrayList<PlayingCard> getHandCopy() {
+    ArrayList<PlayingCard> copy = new ArrayList<>(this.hand.size());
+    for (PlayingCard card : this.hand) {
+      copy.add(new StandardPlayingCard(card.getRank(), card.getSuit())); // Deep copy
     }
-    return convertedDeck;
-  }
-
-  /**
-   * A helper method to convert the given deck from an ArrayList to a Deque
-   */
-  private Deque<PlayingCard> arrayListToDeque(ArrayList<PlayingCard> deck) {
-    Deque<PlayingCard> convertedDeck = new ArrayDeque<>();
-    for (PlayingCard card : deck) {
-      convertedDeck.add(card);
-    }
-    return convertedDeck;
+    return copy;
   }
 
   /**
@@ -229,14 +243,13 @@ public class PokerTriangles implements PokerPolygons<PlayingCard> {
    */
   @Override
   public void startGame(List<PlayingCard> deck, boolean shuffle, int handSize) {
-    if (this.isGameStarted) {
-      throw new IllegalStateException("Game has already started.");
-    }
     if (deck == null) {
       throw new IllegalArgumentException("Deck is null.");
     }
-
-    // Make a copy of the deck so that the original deck passed in is NOT modified
+    if (this.isGameStarted) {
+      throw new IllegalStateException("Game has already started.");
+    }
+    // Making a defensive copy
     List<PlayingCard> deckCopy = new ArrayList<>(deck);
 
     if (deckCopy.contains(null)) {
@@ -248,8 +261,9 @@ public class PokerTriangles implements PokerPolygons<PlayingCard> {
     }
 
     if (deckCopy.size() < handSize + this.getTotalBoardSize()) {
-      throw new IllegalArgumentException("Deck size must be at least large enough to " +
-              "cover the hand and board fully: " + (handSize + this.getTotalBoardSize()));
+      throw new IllegalArgumentException("Deck size must be at least large "
+              + "enough to cover the hand and board fully: "
+              + (handSize + this.getTotalBoardSize()));
     }
 
     if (shuffle) {
@@ -258,11 +272,14 @@ public class PokerTriangles implements PokerPolygons<PlayingCard> {
 
     this.handSize = handSize;
 
-    // Take the first `handSize` cards for the hand (without modifying the original deck copy)
+    // Take the first `handSize` cards for the hand (WITHOUT modifying the original deck)
     this.hand = new ArrayList<>(deckCopy.subList(0, handSize));
 
-    // The deck should remain a full copy (not removing first 5 cards)
-    this.deck = new ArrayDeque<>(deckCopy); // Full deck retained
+    // Remove only from `deckCopy`, preserving `deck` given to `startGame()`
+    deckCopy.subList(0, handSize).clear();
+
+    // Set the internal game deck to the modified copy
+    this.deck = new ArrayDeque<>(deckCopy); // Remaining deck retained
 
     // Initialize the game board with empty cards
     this.gameBoard = initializeGameBoard(this.sideLength);
@@ -303,9 +320,6 @@ public class PokerTriangles implements PokerPolygons<PlayingCard> {
     List<PlayingCard> defaultDeck = new ArrayList<>();
     for (Ranks rank : Ranks.values()) {
       for (Suits suit : Suits.values()) {
-        if (suit == Suits.EMPTY) {  // SKIP EMPTY SUIT
-          continue;
-        }
         defaultDeck.add(new StandardPlayingCard(rank, suit));
       }
     }
@@ -322,7 +336,6 @@ public class PokerTriangles implements PokerPolygons<PlayingCard> {
    * @throws IllegalArgumentException if the row and column are not a valid location
    *                                  for a card in the polygonal board
    */
-  //TODO: Fix to represent old represntatiopn
   @Override
   public PlayingCard getCardAt(int row, int col) {
     if (row < 0 || row >= this.getSideLength() || col < 0 || col > row) {
@@ -331,7 +344,11 @@ public class PokerTriangles implements PokerPolygons<PlayingCard> {
 
     PlayingCard card = this.gameBoard[row][col];
 
-    return card.equals(EmptyCard.getEmptyCard()) ? null : card; // Return null instead of EmptyCard
+    if (card != null && card.equals(EmptyCard.getEmptyCard())) {
+      return null; // Replace EmptyCard with null to match old representation
+    }
+
+    return card; // Return the actual card (or null if uninitialized)
   }
 
   /**
@@ -361,36 +378,168 @@ public class PokerTriangles implements PokerPolygons<PlayingCard> {
     if (!this.isGameStarted) {
       throw new IllegalStateException("Game has not started.");
     }
-    int totalScore = 0;
 
-    // Extract all valid hands from the game board
+    int totalScore = 0;
     List<List<PlayingCard>> hands = this.extractHands();
 
-    // Iterate over each hand and determine its highest-scoring category
+    // Iterate over each hand
     for (List<PlayingCard> hand : hands) {
-      if (isStraightFlush(hand)) {
-        totalScore += 75;
-      } else if (isFourOfAKind(hand)) {
-        totalScore += 50;
-      } else if (isFullHouse(hand)) {
-        totalScore += 25;
-      } else if (isFlush(hand)) {
-        totalScore += 20;
-      } else if (isStraight(hand)) {
-        totalScore += 15;
-      } else if (isThreeOfAKind(hand)) {
-        totalScore += 10;
-      } else if (isTwoPair(hand)) {
-        totalScore += 5;
-      } else if (isPair(hand)) {
-        totalScore += 2;
-      } else {
-        totalScore += 0; // High card case no points.
+      if (hand.size() == 5) {
+        // If exactly 5 cards, evaluate normally
+        totalScore += evaluateHand(hand);
+      } else if (hand.size() > 5) {
+        // If more than 5 cards, find the best 5-card subset
+        totalScore += findBest5CardSubset(hand);
       }
     }
 
     return totalScore;
   }
+
+  /**
+   * To find the best 5 card subset, instead of evaluating the hand multiple times
+   * when greater than 5.
+   * @param hand is the hand greater than 5 cards
+   * @return the best score out of the hand.
+   */
+  private int findBest5CardSubset(List<PlayingCard> hand) {
+    if (hand.size() < 5) {
+      return 0; // Not enough cards for a valid poker hand
+    }
+
+    // Sort the hand first
+    sortHandByRank(hand);
+
+    // Use a HashMap to count occurrences of each rank
+    Map<Ranks, Integer> rankCounts = getRankCounts(hand);
+
+    int bestScore = 0;
+
+    // Check all possible 5-card windows in sorted order
+    for (int i = 0; i <= hand.size() - 5; i++) {
+      List<PlayingCard> subset = hand.subList(i, i + 5);
+      bestScore = Math.max(bestScore, evaluateHand(subset));
+    }
+
+    // If no valid 5-card poker hand is found, check for pairs in the full hand
+    if (bestScore == 0) {
+      bestScore = evaluateAnyNPair(hand);
+    }
+
+    return bestScore;
+  }
+
+  /**
+   * To evaluate if we have a scoring that is n cards long like
+   * a pair, three of a kind, or four of a kind and other cases.
+   * @param hand is the given hand.
+   * @return the score of this NPair case.
+   */
+  private int evaluateAnyNPair(List<PlayingCard> hand) {
+    Map<Ranks, Integer> rankCounts = getRankCounts(hand);
+    boolean hasPair = false;
+    boolean hasThreeOfAKind = false;
+
+    for (int count : rankCounts.values()) {
+      if (count == 4) {
+        return 50;  // Four of a kind
+      }
+      if (count == 3) {
+        hasThreeOfAKind = true;
+      }
+      if (count == 2) {
+        if (hasPair) {
+          return 5;  // Two Pair
+        }
+        hasPair = true;
+      }
+    }
+
+    if (hasThreeOfAKind && hasPair) {
+      return 25;  // Full House
+    }
+    if (hasThreeOfAKind) {
+      return 10;  // Three of a Kind
+    }
+    if (hasPair) {
+      return 2;  // Single Pair
+    }
+
+    return 0;
+  }
+
+  /**
+   * To sort the hand by rank for proper scoring.
+   * @param hand is the given hand to sort.
+   */
+  private void sortHandByRank(List<PlayingCard> hand) {
+    hand.sort(new Comparator<PlayingCard>() {
+      @Override
+      public int compare(PlayingCard card1, PlayingCard card2) {
+        return Integer.compare(card1.getRank().getValue(), card2.getRank().getValue());
+      }
+    });
+  }
+
+
+  /**
+   * To find the best score of the given hand.
+   * @param hand is the given hand.
+   * @return the best score of the hand.
+   */
+  private int evaluateHand(List<PlayingCard> hand) {
+    if (hand.size() < 5) {
+      return 0; // Hands must be at least 5 cards
+    }
+
+    // Sort by rank
+    sortHandByRank(hand);
+
+    int bestScore = 0; // Track highest score found
+
+    // Count occurrences of suits
+    Map<Suits, List<PlayingCard>> suitGroups = new HashMap<>();
+    for (PlayingCard card : hand) {
+      suitGroups.putIfAbsent(card.getSuit(), new ArrayList<>());
+      suitGroups.get(card.getSuit()).add(card);
+    }
+
+    // Check for flush (including straight flush)
+    for (List<PlayingCard> suitHand : suitGroups.values()) {
+      if (suitHand.size() >= 5) {
+        sortHandByRank(suitHand); // Sort the flush cards
+
+        // Generate all possible 5-card subsets from flush group
+        for (int i = 0; i <= suitHand.size() - 5; i++) {
+          List<PlayingCard> flushSubset = suitHand.subList(i, i + 5);
+          if (isStraight(flushSubset)) {
+            bestScore = Math.max(bestScore, 75); // Straight Flush
+          } else {
+            bestScore = Math.max(bestScore, 20); // Regular Flush
+          }
+        }
+      }
+    }
+
+    // Check for Four of a Kind, Full House, etc.
+    bestScore = Math.max(bestScore, isFourOfAKind(hand) ? 50 : 0);
+    bestScore = Math.max(bestScore, isFullHouse(hand) ? 25 : 0);
+
+    // Check for a regular straight only if we haven't already found a straight flush
+    for (int i = 0; i <= hand.size() - 5; i++) {
+      if (isStraight(hand.subList(i, i + 5))) {
+        bestScore = Math.max(bestScore, 15); // Regular Straight
+      }
+    }
+
+    // Continue with other hand types
+    bestScore = Math.max(bestScore, isThreeOfAKind(hand) ? 10 : 0);
+    bestScore = Math.max(bestScore, isTwoPair(hand) ? 5 : 0);
+    bestScore = Math.max(bestScore, isPair(hand) ? 2 : 0);
+
+    return bestScore;
+  }
+
 
   /**
    * To extract the hands valid for scoring from the game board. That includes
@@ -419,8 +568,15 @@ public class PokerTriangles implements PokerPolygons<PlayingCard> {
   private List<List<PlayingCard>> getValidRows() {
     List<List<PlayingCard>> validRows = new ArrayList<>();
     for (int row = 0; row < sideLength; row++) {
-      if (this.gameBoard[row].length >= 5) { // Only store rows with 5+ cards
-        validRows.add(Arrays.asList(this.gameBoard[row]));
+      List<PlayingCard> filteredRow = new ArrayList<>();
+      for (PlayingCard card : this.gameBoard[row]) {
+        // Filter empty slots and null out-of-bounds slots
+        if (card != null && !card.equals(EmptyCard.getEmptyCard())) {
+          filteredRow.add(card);
+        }
+      }
+      if (filteredRow.size() >= 5) { // **Only add if there are 5+ valid cards**
+        validRows.add(filteredRow);
       }
     }
     return validRows;
@@ -435,7 +591,11 @@ public class PokerTriangles implements PokerPolygons<PlayingCard> {
     for (int col = 0; col < sideLength; col++) {
       List<PlayingCard> columnHand = new ArrayList<>();
       for (int row = col; row < sideLength; row++) { // Columns increase as rows go down
-        columnHand.add(this.gameBoard[row][col]);
+        PlayingCard card = this.gameBoard[row][col];
+        // Filter empty slots and null out-of-bounds slots
+        if (card != null && !card.equals(EmptyCard.getEmptyCard())) { // **Filter empty slots**
+          columnHand.add(card);
+        }
       }
       if (columnHand.size() >= 5) {
         validColumns.add(columnHand);
@@ -451,7 +611,11 @@ public class PokerTriangles implements PokerPolygons<PlayingCard> {
   private List<PlayingCard> getMainDiagonal() {
     List<PlayingCard> mainDiagonal = new ArrayList<>();
     for (int i = 0; i < sideLength; i++) {
-      mainDiagonal.add(this.gameBoard[i][i]);
+      PlayingCard card = this.gameBoard[i][i];
+      // Filter empty slots and null out-of-bounds slots
+      if (card != null && !card.equals(EmptyCard.getEmptyCard())) {
+        mainDiagonal.add(card);
+      }
     }
     return mainDiagonal;
   }
@@ -518,7 +682,9 @@ public class PokerTriangles implements PokerPolygons<PlayingCard> {
     List<Integer> sortedValues = new ArrayList<>(uniqueValues);
 
     // If there are less than 5 distinct values, it's not a straight
-    if (sortedValues.size() < 5) return false;
+    if (sortedValues.size() < 5) {
+      return false;
+    }
 
     // Check if any 5 consecutive numbers form a straight
     for (int i = 0; i <= sortedValues.size() - 5; i++) {
@@ -529,7 +695,9 @@ public class PokerTriangles implements PokerPolygons<PlayingCard> {
           break;
         }
       }
-      if (isSequential) return true;
+      if (isSequential) {
+        return true;
+      }
     }
 
     return false;

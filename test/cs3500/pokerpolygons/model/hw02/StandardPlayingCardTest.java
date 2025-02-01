@@ -1,7 +1,8 @@
 package cs3500.pokerpolygons.model.hw02;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 /**
  * Tests for the StandardPlayingCard class.

@@ -1,7 +1,5 @@
 package cs3500.pokerpolygons.model.hw02;
 
-import java.security.PublicKey;
-
 /**
  * To represent the rank of a card in Poker, where aces are both high and low.
  */
@@ -24,7 +22,7 @@ public enum Ranks {
   private final int fourteenValue;
 
   /**
-   * To construct card ranks 2 - 13
+   * To construct card ranks 2 - 13.
    */
   Ranks(int value) {
     this.oneValue = value;

@@ -28,4 +28,6 @@ public class StandardPlayingCard extends AbstractPlayingCard {
   public String toString() {
     return rank.toString() + suit.toString();
   }
+
+
 }

@@ -2,11 +2,12 @@ package cs3500.pokerpolygons.view;
 
 import cs3500.pokerpolygons.model.hw02.Card;
 import cs3500.pokerpolygons.model.hw02.PokerPolygons;
+import cs3500.pokerpolygons.model.hw02.EmptyCard;
+
 import java.util.List;
-//TODO: Refactorfor empty card
-//TODO: Create Tests
+
 /**
- * A String type view of a PokerTriangles game.
+ * A String type view of a PokerTriangles game, ensuring empty spaces use EmptyCard.
  */
 public class PokerTrianglesTextualView<C extends Card> implements PokerPolygonsTextualView {
   private final PokerPolygons<C> model;
@@ -31,55 +32,82 @@ public class PokerTrianglesTextualView<C extends Card> implements PokerPolygonsT
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-
     int height = model.getHeight();
 
-    // Render the board with a leading space for correct alignment
+    // Construct board representation
     for (int row = 0; row < height; row++) {
-      sb.append(" "); // Add leading space
-
       for (int col = 0; col <= row; col++) {
         C card = model.getCardAt(row, col);
-        if (card == null) {
-          sb.append("__"); // Empty slot
+        String cardStr = (card == null
+                || card.equals(EmptyCard.getEmptyCard())) ? "__" : formatCard(card);
+
+        // Ensure first column always has a leading space
+        if (col == 0) {
+          if (cardStr.length() == 3) {
+            sb.append(cardStr);
+          }
+          else if (cardStr.length() == 2) {
+            sb.append(" ").append(cardStr);
+          }
+          else {
+            sb.append(" ").append(cardStr);
+          }
+        } else if (cardStr.length() == 3) {  // If it's a "10" card, only one space before
+          sb.append(" ").append(cardStr);
         } else {
-          sb.append(formatCard(card));
-        }
-        if (col < row) { // Space only between elements, not at the end
-          sb.append(" ");
+          sb.append("  ").append(cardStr); // Default: two spaces before every other column
         }
       }
-      sb.append("\n"); // Move to the next line
+      sb.append("\n");
     }
 
-    // Display remaining deck size
+    // Append deck size
     sb.append("Deck: ").append(model.getRemainingDeckSize()).append("\n");
 
-    // Display the player's hand
-    List<C> hand = model.getHand();
-    sb.append("Hand:");
-    for (int i = 0; i < hand.size(); i++) {
-      sb.append(formatCard(hand.get(i)));
-      if (i < hand.size() - 1) {
-        sb.append(",");
+    // Append formatted hand
+    sb.append("Hand: ").append(formatHand(model.getHand()));
+
+    return sb.toString();
+  }
+
+  /**
+   * Checks if the given (row, col) is on the diagonal.
+   */
+  private boolean isDiagonal(int row, int col) {
+    return row == col;
+  }
+
+  /**
+   * Formats the player's hand with proper spacing.
+   */
+  private String formatHand(List<C> hand) {
+    StringBuilder sb = new StringBuilder();
+    boolean first = true;
+
+    for (C card : hand) {
+      if (!first) {
+        sb.append(", ");
       }
+
+      String formattedCard = formatCard(card);
+
+      // Ensure 10-based cards align properly
+      if (formattedCard.length() == 3) {
+        sb.append(formattedCard);
+      } else {
+        sb.append(formattedCard);
+      }
+
+      first = false;
     }
     return sb.toString();
   }
 
   /**
-   * Formats a card for display.
-   *
-   * @param card the card to format
-   * @return the formatted card string
+   * Formats a card for display, ensuring proper alignment for "10" and single-character cards.
    */
   private String formatCard(C card) {
     String cardStr = card.toString();
-
-    if (cardStr.length() == 2) {
-      return " " + cardStr; // Ensuring spacing for two-character cards
-    } else {
-      return cardStr;
-    }
+    return cardStr;
   }
 }
