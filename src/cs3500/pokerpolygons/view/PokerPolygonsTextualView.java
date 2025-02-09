@@ -17,4 +17,6 @@ public interface PokerPolygonsTextualView {
    */
   void render(Appendable append) throws IOException;
 
+
+
 }

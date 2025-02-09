@@ -260,6 +260,11 @@ public class PokerTrianglesTextualViewTest {
   }
 
 
+  /*
+   * To test the render method's general functionality,
+   * which is to append Appendable type to the board's String
+   *
+   */
 
 
 
