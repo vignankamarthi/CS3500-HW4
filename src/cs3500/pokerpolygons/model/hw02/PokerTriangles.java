@@ -19,13 +19,16 @@ import static cs3500.pokerpolygons.model.hw02.EmptyCard.getEmptyCard;
  */
 public class PokerTriangles implements PokerPolygons<PlayingCard> {
 
+  // list item index 0 is the top of the deck
   private Deque<PlayingCard> deck;
   private boolean shuffle;
   private int handSize;
+  // list item 0 is the first card in the hand
   private ArrayList<PlayingCard> hand;
   private boolean isGameStarted;
   private final int sideLength;
   private Random randomizer;
+  // Gameboard is represented as row col, where the top left is (0,0)
   private PlayingCard[][] gameBoard;
 
   /**
@@ -246,13 +249,8 @@ public class PokerTriangles implements PokerPolygons<PlayingCard> {
     if (deck == null) {
       throw new IllegalArgumentException("Deck is null.");
     }
-    if (this.isGameStarted) {
-      throw new IllegalStateException("Game has already started.");
-    }
-    // Making a defensive copy
-    List<PlayingCard> deckCopy = new ArrayList<>(deck);
 
-    if (deckCopy.contains(null)) {
+    if (deck.contains(null)) {
       throw new IllegalArgumentException("Deck contains a null card.");
     }
 
@@ -260,26 +258,33 @@ public class PokerTriangles implements PokerPolygons<PlayingCard> {
       throw new IllegalArgumentException("Hand size must be positive.");
     }
 
-    if (deckCopy.size() < handSize + this.getTotalBoardSize()) {
+    if (deck.size() < handSize + this.getTotalBoardSize()) {
       throw new IllegalArgumentException("Deck size must be at least large "
               + "enough to cover the hand and board fully: "
               + (handSize + this.getTotalBoardSize()));
     }
 
-    if (shuffle) {
-      Collections.shuffle(deckCopy, this.randomizer);
+    if (this.isGameStarted) {
+      throw new IllegalStateException("Game has already started.");
     }
+
+
+    if (shuffle) {
+      Collections.shuffle(deck, this.randomizer);
+    }
+
+
 
     this.handSize = handSize;
 
     // Take the first `handSize` cards for the hand (WITHOUT modifying the original deck)
-    this.hand = new ArrayList<>(deckCopy.subList(0, handSize));
+    this.hand = new ArrayList<>(deck.subList(0, handSize));
 
-    // Remove only from `deckCopy`, preserving `deck` given to `startGame()`
-    deckCopy.subList(0, handSize).clear();
+    // Remove from deck
+    deck.subList(0, handSize).clear();
 
     // Set the internal game deck to the modified copy
-    this.deck = new ArrayDeque<>(deckCopy); // Remaining deck retained
+    this.deck = new ArrayDeque<>(deck); // Remaining deck retained
 
     // Initialize the game board with empty cards
     this.gameBoard = initializeGameBoard(this.sideLength);
@@ -399,34 +404,44 @@ public class PokerTriangles implements PokerPolygons<PlayingCard> {
   /**
    * To find the best 5 card subset, instead of evaluating the hand multiple times
    * when greater than 5.
-   * @param hand is the hand greater than 5 cards
+   * @param hand is the hand of cards to evaluate.
    * @return the best score out of the hand.
    */
   private int findBest5CardSubset(List<PlayingCard> hand) {
     if (hand.size() < 5) {
-      return 0; // Not enough cards for a valid poker hand
+      return 0;
     }
-
-    // Sort the hand first
-    sortHandByRank(hand);
-
-    // Use a HashMap to count occurrences of each rank
-    Map<Ranks, Integer> rankCounts = getRankCounts(hand);
-
     int bestScore = 0;
 
-    // Check all possible 5-card windows in sorted order
-    for (int i = 0; i <= hand.size() - 5; i++) {
-      List<PlayingCard> subset = hand.subList(i, i + 5);
+    List<List<PlayingCard>> subsets = new ArrayList<>();
+
+    generateCombinations(hand, 0, new ArrayList<>(), subsets);
+
+    for (List<PlayingCard> subset : subsets) {
       bestScore = Math.max(bestScore, evaluateHand(subset));
     }
-
-    // If no valid 5-card poker hand is found, check for pairs in the full hand
-    if (bestScore == 0) {
-      bestScore = evaluateAnyNPair(hand);
-    }
-
     return bestScore;
+  }
+
+  /**
+   * Recursively generates all unique 5-card combinations from the given hand.
+   *
+   * @param hand the list of cards to choose from
+   * @param start the starting index in the hand for selecting cards
+   * @param current the current combination of cards being built; should be empty when first invoked
+   * @param result the list that accumulates all valid 5-card combinations;
+   *               should be empty when first invoked
+   */
+  private void generateCombinations(List<PlayingCard> hand, int start,
+                                    List<PlayingCard> current, List<List<PlayingCard>> result) {
+    if (current.size() == 5) {
+      result.add(new ArrayList<>(current));
+    }
+    for (int i = start; i < hand.size(); i++) {
+      current.add(hand.get(i));
+      generateCombinations(hand, i + 1, current, result);
+      current.remove(current.size() - 1);
+    }
   }
 
   /**

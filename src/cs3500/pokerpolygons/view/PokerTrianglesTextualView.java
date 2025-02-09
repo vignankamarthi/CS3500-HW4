@@ -4,6 +4,7 @@ import cs3500.pokerpolygons.model.hw02.Card;
 import cs3500.pokerpolygons.model.hw02.PokerPolygons;
 import cs3500.pokerpolygons.model.hw02.EmptyCard;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -109,5 +110,21 @@ public class PokerTrianglesTextualView<C extends Card> implements PokerPolygonsT
   private String formatCard(C card) {
     String cardStr = card.toString();
     return cardStr;
+  }
+
+  /**
+   * To append the current textual output to the given appendable.
+   *
+   * @param append is the appendable to append to the current textual output.
+   * @throws IllegalArgumentException if append is null
+   * @throws IOException              if the rendering fails for some reason
+   */
+  //TODO: Test this method
+  @Override
+  public void render(Appendable append) throws IOException {
+    if (append == null) {
+      throw new IllegalArgumentException("Append cannot be null.");
+    }
+    append.append(this.model.toString());
   }
 }

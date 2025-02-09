@@ -1,7 +1,8 @@
 package cs3500.pokerpolygons.model.hw02;
 
 /**
- * To represent the idea of a playing card in a game.
+ * To represent the idea of a playing card that has a rank and suit in the standard
+ * french-style suits and A-K ranking system.
  */
 public interface PlayingCard extends Card {
 

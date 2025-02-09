@@ -1,7 +1,9 @@
 package cs3500.pokerpolygons.model.hw02;
 
 /**
- * Represents a standard playing card in a 52-card deck.
+ * Represents a standard playing card in a 52-card deck that is french-suited and A-K ranked.
+ * No jokers are included, and this deck can be used to play and standard type of card game
+ * like blackjack, poker, go-fish etc.
  */
 public class StandardPlayingCard extends AbstractPlayingCard {
 
