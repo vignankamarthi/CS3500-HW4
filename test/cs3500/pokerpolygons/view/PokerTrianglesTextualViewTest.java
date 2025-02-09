@@ -2,6 +2,8 @@ package cs3500.pokerpolygons.view;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -14,6 +16,7 @@ import cs3500.pokerpolygons.model.hw02.Suits;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.fail;
 
 /**
  * To test the String rendering of the PokerTrianglesView class.
@@ -259,13 +262,74 @@ public class PokerTrianglesTextualViewTest {
     return deck;
   }
 
-
-  /*
-   * To test the render method's general functionality,
-   * which is to append Appendable type to the board's String
-   *
+  /**
+   * Tests that render correctly appends the game state to an empty Appendable.
    */
+  @Test
+  public void testRenderAppendsToEmptyAppendable() {
+    PokerTriangles game = new PokerTriangles(5, new Random(8));
+    game.startGame(getSampleDeck(), true, 4);
+    PokerTrianglesTextualView<PlayingCard> view = new PokerTrianglesTextualView<>(game);
+
+    StringBuilder output = new StringBuilder();
+    try {
+      view.render(output);
+    } catch (IOException e) {
+      fail("IOException should not have been thrown.");
+    }
+
+    assertEquals(game.toString(), output.toString());
+  }
+
+  /**
+   * Tests that render correctly appends the game state to an Appendable.
+   */
+  @Test
+  public void testRenderAppendsToAppendable() {
+    PokerTriangles game = new PokerTriangles(5, new Random(8));
+    game.startGame(getSampleDeck(), true, 4);
+    PokerTrianglesTextualView<PlayingCard> view = new PokerTrianglesTextualView<>(game);
+
+    StringBuilder output = new StringBuilder("Game");
+    try {
+      view.render(output);
+    } catch (IOException e) {
+      fail("IOException should not have been thrown.");
+    }
+
+    assertEquals("Game" + game.toString(), output.toString());
+  }
 
 
+  /**
+   * Tests that render throws an IllegalArgumentException when given a null Appendable.
+   */
+  @Test
+  public void testRenderThrowsExceptionForNullAppendable() {
+    PokerTriangles game = new PokerTriangles(5, new Random(8));
+    game.startGame(getSampleDeck(), true, 4);
+    PokerTrianglesTextualView<PlayingCard> view = new PokerTrianglesTextualView<>(game);
+
+    try {
+      view.render(null);
+      fail("Expected IllegalArgumentException to be thrown, but it was not.");
+    } catch (IllegalArgumentException e) {
+    } catch (IOException e) {
+      fail("IOException should not be thrown in this case.");
+    }
+  }
+
+  /**
+   * Tests that constructing a PokerTrianglesTextualView with a null model
+   * throws an IllegalArgumentException.
+   */
+  @Test
+  public void testConstructorThrowsExceptionForNullModel() {
+    try {
+      new PokerTrianglesTextualView<PlayingCard>(null);
+      fail("Expected IllegalArgumentException to be thrown, but it was not.");
+    } catch (IllegalArgumentException e) {
+    }
+  }
 
 }

@@ -432,6 +432,7 @@ public class PokerTriangles implements PokerPolygons<PlayingCard> {
    * @param result the list that accumulates all valid 5-card combinations;
    *               should be empty when first invoked
    */
+  //TODO: Understand this method
   private void generateCombinations(List<PlayingCard> hand, int start,
                                     List<PlayingCard> current, List<List<PlayingCard>> result) {
     if (current.size() == 5) {

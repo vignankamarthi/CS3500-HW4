@@ -119,7 +119,6 @@ public class PokerTrianglesTextualView<C extends Card> implements PokerPolygonsT
    * @throws IllegalArgumentException if append is null
    * @throws IOException              if the rendering fails for some reason
    */
-  //TODO: Test this method
   @Override
   public void render(Appendable append) throws IOException {
     if (append == null) {
