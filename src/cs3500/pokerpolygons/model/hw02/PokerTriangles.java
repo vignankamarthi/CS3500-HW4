@@ -155,7 +155,8 @@ public class PokerTriangles implements PokerPolygons<PlayingCard> {
       throw new IllegalArgumentException("Given position already has a card.");
     }
 
-    // Place desired card in deck to desired position.
+    // Place the selected card from the hand into the
+    // board at the specified position.
     this.gameBoard[row][col] = this.hand.remove(cardIdx);
 
     // Draw from the deck into the hand.
@@ -268,28 +269,28 @@ public class PokerTriangles implements PokerPolygons<PlayingCard> {
       throw new IllegalStateException("Game has already started.");
     }
 
-
-    if (shuffle) {
-      Collections.shuffle(deck, this.randomizer);
-    }
-
-
-
     this.handSize = handSize;
 
-    // Take the first `handSize` cards for the hand (WITHOUT modifying the original deck)
-    this.hand = new ArrayList<>(deck.subList(0, handSize));
+    // Create a defensive copy of the deck so that the original deck is not modified.
+    List<PlayingCard> deckCopy = new ArrayList<>(deck);
 
-    // Remove from deck
-    deck.subList(0, handSize).clear();
+    if (shuffle) {
+      Collections.shuffle(deckCopy, this.randomizer);
+    }
 
-    // Set the internal game deck to the modified copy
-    this.deck = new ArrayDeque<>(deck); // Remaining deck retained
+    // Take the first 'handSize' cards for the hand.
+    this.hand = new ArrayList<>(deckCopy.subList(0, handSize));
 
-    // Initialize the game board with empty cards
+    // Remove the cards used for the hand from the deck copy.
+    deckCopy.subList(0, handSize).clear();
+
+    // Set the internal deck to the remaining cards.
+    this.deck = new ArrayDeque<>(deckCopy);
+
+    // Initialize the game board with empty cards.
     this.gameBoard = initializeGameBoard(this.sideLength);
 
-    // Mark the game as started after everything is set up
+    // Mark the game as started.
     this.isGameStarted = true;
   }
 
@@ -343,6 +344,9 @@ public class PokerTriangles implements PokerPolygons<PlayingCard> {
    */
   @Override
   public PlayingCard getCardAt(int row, int col) {
+    if (!this.isGameStarted) {
+      throw new IllegalStateException("Game has not started.");
+    }
     if (row < 0 || row >= this.getSideLength() || col < 0 || col > row) {
       throw new IllegalArgumentException("Row or column out of bounds: " + row + ", " + col);
     }
@@ -489,12 +493,8 @@ public class PokerTriangles implements PokerPolygons<PlayingCard> {
    * @param hand is the given hand to sort.
    */
   private void sortHandByRank(List<PlayingCard> hand) {
-    hand.sort(new Comparator<PlayingCard>() {
-      @Override
-      public int compare(PlayingCard card1, PlayingCard card2) {
-        return Integer.compare(card1.getRank().getValue(), card2.getRank().getValue());
-      }
-    });
+    hand.sort((card1, card2) ->
+            Integer.compare(card1.getRank().getValue(), card2.getRank().getValue()));
   }
 
 

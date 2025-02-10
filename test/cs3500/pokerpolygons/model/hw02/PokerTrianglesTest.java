@@ -445,7 +445,7 @@ public class PokerTrianglesTest {
     game1.startGame(deck1, false, 5); // No shuffle
     game2.startGame(deck2, true, 5);  // With shuffle
 
-    assertNotEquals(deck1.subList(0, 5), deck2.subList(0, 5)); // Hands should be different
+    assertNotEquals(game1.getHand(), game2.getHand()); // Hands should be different// Hands should be different
   }
 
 

@@ -63,7 +63,7 @@ public class PokerPolygonsTextualController implements PokerPolygonsController {
                   + view.toString() + "\n"
                   + "Score: " + model.getScore());
       }
-
+      //TODO: Continue implementing basic controller function
 
     }
 

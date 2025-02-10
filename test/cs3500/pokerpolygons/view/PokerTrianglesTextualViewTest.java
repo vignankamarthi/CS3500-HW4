@@ -313,7 +313,6 @@ public class PokerTrianglesTextualViewTest {
     try {
       view.render(null);
       fail("Expected IllegalArgumentException to be thrown, but it was not.");
-    } catch (IllegalArgumentException e) {
     } catch (IOException e) {
       fail("IOException should not be thrown in this case.");
     }
