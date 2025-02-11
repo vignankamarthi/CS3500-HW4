@@ -115,7 +115,7 @@ public class PokerTrianglesTextualView<C extends Card> implements PokerPolygonsT
   /**
    * To append the current textual output to the given appendable.
    *
-   * @param append is the appendable to append to the current textual output.
+   * @param append is the argument that will get the textual view appended on to.
    * @throws IllegalArgumentException if append is null
    * @throws IOException              if the rendering fails for some reason
    */
@@ -124,6 +124,7 @@ public class PokerTrianglesTextualView<C extends Card> implements PokerPolygonsT
     if (append == null) {
       throw new IllegalArgumentException("Append cannot be null.");
     }
+
     append.append(this.model.toString());
   }
 }

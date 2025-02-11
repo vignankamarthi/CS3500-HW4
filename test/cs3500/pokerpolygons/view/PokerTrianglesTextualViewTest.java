@@ -16,6 +16,7 @@ import cs3500.pokerpolygons.model.hw02.Suits;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.fail;
 
 /**
@@ -310,12 +311,7 @@ public class PokerTrianglesTextualViewTest {
     game.startGame(getSampleDeck(), true, 4);
     PokerTrianglesTextualView<PlayingCard> view = new PokerTrianglesTextualView<>(game);
 
-    try {
-      view.render(null);
-      fail("Expected IllegalArgumentException to be thrown, but it was not.");
-    } catch (IOException e) {
-      fail("IOException should not be thrown in this case.");
-    }
+    assertThrows(IllegalArgumentException.class, () -> view.render(null));
   }
 
   /**

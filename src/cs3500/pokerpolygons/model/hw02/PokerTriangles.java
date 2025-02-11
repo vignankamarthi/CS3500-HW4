@@ -143,13 +143,15 @@ public class PokerTriangles implements PokerPolygons<PlayingCard> {
       throw new IllegalStateException("Game has not started.");
     }
     if (cardIdx >= this.handSize || cardIdx < 0) {
-      throw new IllegalArgumentException("Card index in the hand is out of bounds: " + cardIdx);
+      throw new IllegalArgumentException("Card index in the hand is out of bounds: "
+              + (cardIdx + 1));
     }
     if (row < 0 || col < 0) { // Explicitly check for negative values
       throw new IllegalArgumentException("Row and column indices must be non-negative.");
     }
     if (outOfBounds(row, col, this.gameBoard)) {
-      throw new IllegalArgumentException("Out of bounds of the game board: " + row + ", " + col);
+      throw new IllegalArgumentException("Out of bounds of the game board: "
+              + (row + 1) + ", " + (col + 1));
     }
     if (hasCardInPosition(row, col, this.gameBoard)) {
       throw new IllegalArgumentException("Given position already has a card.");
@@ -206,7 +208,7 @@ public class PokerTriangles implements PokerPolygons<PlayingCard> {
       throw new IllegalStateException("Hand is empty.");
     }
     if (cardIdx >= this.hand.size() || cardIdx < 0) {
-      throw new IllegalArgumentException("Card index out of bounds of the hand: " + cardIdx);
+      throw new IllegalArgumentException("Card index out of bounds of the hand: " + (cardIdx + 1));
     }
 
 
