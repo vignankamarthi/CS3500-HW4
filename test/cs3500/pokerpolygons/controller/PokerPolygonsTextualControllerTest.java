@@ -1,20 +1,23 @@
 package cs3500.pokerpolygons.controller;
 
 import cs3500.pokerpolygons.model.hw02.PlayingCard;
+import cs3500.pokerpolygons.model.hw02.PokerPolygons;
 import cs3500.pokerpolygons.model.hw02.PokerPolygonsSimple;
 import cs3500.pokerpolygons.model.hw02.Ranks;
 import cs3500.pokerpolygons.model.hw02.StandardPlayingCard;
 import cs3500.pokerpolygons.model.hw02.Suits;
-import cs3500.pokerpolygons.view.PokerPolygonsTextualView;
 import cs3500.pokerpolygons.view.PokerTrianglesTextualViewSimple;
-
-import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
+//TODO: Write tests for BOTH unit and integration:
+// * the model waits after "nonesense is typed" for placeCard, then places the card after receiving a valid input
+// * the model waits after "nonesense is typed" for discardCard, then places the card after receiving a valid input
+
 
 /**
  * Unit tests for the PokerPolygonsTextualController class using the mocks (view and model).
@@ -54,6 +57,7 @@ public class PokerPolygonsTextualControllerTest {
             + "Score: 0"  + System.lineSeparator()
             + "Game quit!"  + System.lineSeparator()
             + "State of game when quit:" + System.lineSeparator()
+            + "Mock view state" + System.lineSeparator()
             + "Score: " + mockModel.getScore();
 
     assertEquals(expected, output.toString());
@@ -90,6 +94,7 @@ public class PokerPolygonsTextualControllerTest {
             + "Score: 0"  + System.lineSeparator()
             + "Game quit!"  + System.lineSeparator()
             + "State of game when quit:" + System.lineSeparator()
+            + "Mock view state" + System.lineSeparator()
             + "Score: " + mockModel.getScore();
 
     assertEquals(expected, output.toString());
@@ -112,7 +117,6 @@ public class PokerPolygonsTextualControllerTest {
     return deck;
   }
 
-  // TODO: Understand these tests, then add JuNit Test and fix them in your implementation
   /**
    * Tests a successful "place" command.
    * User input: "place 2 3 1 q"
@@ -123,8 +127,8 @@ public class PokerPolygonsTextualControllerTest {
     StringReader input = new StringReader("place 2 3 1 q");
     StringBuilder output = new StringBuilder();
     StringBuilder modelLog = new StringBuilder();
+
     PokerPolygonsSimple<PlayingCard> mockModel = new PokerPolygonsSimple<>(modelLog);
-    mockModel.setScore(10);
     List<PlayingCard> deck = createDummyDeck();
 
     // Using the simple textual view
@@ -150,7 +154,6 @@ public class PokerPolygonsTextualControllerTest {
     StringBuilder output = new StringBuilder();
     StringBuilder modelLog = new StringBuilder();
     PokerPolygonsSimple<PlayingCard> mockModel = new PokerPolygonsSimple<>(modelLog);
-    mockModel.setScore(20);
     List<PlayingCard> deck = createDummyDeck();
 
     // Using the simple textual view
@@ -165,5 +168,138 @@ public class PokerPolygonsTextualControllerTest {
     assertTrue(modelLog.toString().contains("discardCard(2)"));
   }
 
+  /**
+   * Testing to see what happens when the user inputs zero as an argument for
+   * placing a card on the board.
+   */
+  @Test
+  public void testZeroAsInputToCommand() {
+    StringReader input = new StringReader("place 0 3 1 q");
+    StringBuilder output = new StringBuilder();
+
+    StringBuilder modelLog = new StringBuilder();
+    PokerPolygonsSimple<PlayingCard> mockModel = new PokerPolygonsSimple<>(modelLog);
+    List<PlayingCard> deck = createDummyDeck();
+
+    // Using the mock view
+    PokerTrianglesTextualViewSimple<PlayingCard> view = new PokerTrianglesTextualViewSimple<>(mockModel);
+
+    // Create the controller and start the game
+    PokerPolygonsTextualController controller = new PokerPolygonsTextualController(input, output);
+    controller.playGame(mockModel, view, deck, false, 4);
+
+    // Construct the expected output with the correct sequence
+    String expectedOutput =
+            "Mock view state" + System.lineSeparator() +  // Initial board print
+                    "Score: 0" + System.lineSeparator() +
+                    "Mock view state" + System.lineSeparator() +  // Retry board print
+                    "Score: 0" + System.lineSeparator() +
+                    "Game quit!" + System.lineSeparator() +  // Quit message
+                    "State of game when quit:" + System.lineSeparator() +
+                    "Mock view state" + System.lineSeparator() +  // Final quit board print
+                    "Score: 0";
+
+    assertEquals(expectedOutput, output.toString());
+  }
+
+  /**
+   * Testing to see what happens when the user inputs zero as an argument for
+   * discarding a card from the hand.
+   */
+  @Test
+  public void testZeroAsInputToDiscard() {
+    StringReader input = new StringReader("discard 0 q");
+    StringBuilder output = new StringBuilder();
+
+    StringBuilder modelLog = new StringBuilder();
+    PokerPolygonsSimple<PlayingCard> mockModel = new PokerPolygonsSimple<>(modelLog);
+    List<PlayingCard> deck = createDummyDeck();
+
+    // Using the mock view
+    PokerTrianglesTextualViewSimple<PlayingCard> view = new PokerTrianglesTextualViewSimple<>(mockModel);
+
+    // Create the controller and start the game
+    PokerPolygonsTextualController controller = new PokerPolygonsTextualController(input, output);
+    controller.playGame(mockModel, view, deck, false, 4);
+
+    // Construct the expected output with the correct sequence
+    String expectedOutput =
+            "Mock view state" + System.lineSeparator() +  // Initial board print
+                    "Score: 0" + System.lineSeparator() +
+                    "Mock view state" + System.lineSeparator() +  // Retry board print
+                    "Score: 0" + System.lineSeparator() +
+                    "Game quit!" + System.lineSeparator() +  // Quit message
+                    "State of game when quit:" + System.lineSeparator() +
+                    "Mock view state" + System.lineSeparator() +  // Final quit board print
+                    "Score: 0";
+
+    assertEquals(expectedOutput, output.toString());
+  }
+
+  @Test
+  public void testControllerWithMockModelAndView() {
+    StringReader input = new StringReader("place 1 1 1 place 2 2 2 place 3 3 3 place 4 4 4 place 5 5 5 q");
+    StringBuilder log = new StringBuilder();
+    StringBuilder output = new StringBuilder();
+
+    PokerPolygons<PlayingCard> model = new PokerPolygonsSimple<>(log);
+    List<PlayingCard> deck = model.getNewDeck();
+
+    // Using the mock model and mock view, but real controller
+    PokerTrianglesTextualViewSimple<PlayingCard> view = new PokerTrianglesTextualViewSimple<>(model);
+    PokerPolygonsTextualController controller = new PokerPolygonsTextualController(input, output);
+
+    controller.playGame(model, view, deck, false, 5);
+
+    // Expected log interactions with mock model
+    String expectedLog =
+            "getNewDeck() called. " +
+                    "startGame(deckSize = 0, shuffle = false, handSize = 5) called. " +
+                    "getScore() called. " +
+                    "placeCardInPosition(0, 0, 0) called. " +
+                    "isGameOver() called. " +
+                    "getScore() called. " +
+                    "isGameOver() called. " +
+                    "placeCardInPosition(1, 1, 1) called. " +
+                    "isGameOver() called. " +
+                    "getScore() called. " +
+                    "isGameOver() called. " +
+                    "placeCardInPosition(2, 2, 2) called. " +
+                    "isGameOver() called. " +
+                    "getScore() called. " +
+                    "isGameOver() called. " +
+                    "placeCardInPosition(3, 3, 3) called. " +
+                    "isGameOver() called. " +
+                    "getScore() called. " +
+                    "isGameOver() called. " +
+                    "placeCardInPosition(4, 4, 4) called. " +
+                    "isGameOver() called. " +
+                    "getScore() called. " +
+                    "isGameOver() called. " +
+                    "getScore() called. ";
+
+    assertEquals(expectedLog, log.toString());
+
+    // Expected output verification
+    String expectedOutput =
+            "Mock view state" + System.lineSeparator() +
+                    "Score: 0" + System.lineSeparator() +
+                    "Mock view state" + System.lineSeparator() +
+                    "Score: 0" + System.lineSeparator() +
+                    "Mock view state" + System.lineSeparator() +
+                    "Score: 0" + System.lineSeparator() +
+                    "Mock view state" + System.lineSeparator() +
+                    "Score: 0" + System.lineSeparator() +
+                    "Mock view state" + System.lineSeparator() +
+                    "Score: 0" + System.lineSeparator() +
+                    "Mock view state" + System.lineSeparator() +
+                    "Score: 0" + System.lineSeparator() +
+                    "Game quit!" + System.lineSeparator() +
+                    "State of game when quit:" + System.lineSeparator() +
+                    "Mock view state" + System.lineSeparator() +
+                    "Score: 0";
+
+    assertEquals(expectedOutput, output.toString());
+  }
 
 }

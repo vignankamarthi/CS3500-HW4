@@ -43,7 +43,6 @@ public class PokerPolygonsTextualController implements PokerPolygonsController {
    * @throws IllegalArgumentException if the model or view are null
    */
   //TODO: Factor out exceptions with helper BESIDES tests marked with **
-  //TODO: AFTER EVERYTHING, factor things out to a command pattern (remember, you have to test it all so check if its worth it)
   @Override
   public <C extends Card> void playGame(PokerPolygons<C> model, PokerPolygonsTextualView view,
                                         List<C> deck, boolean shuffle, int handSize) {
@@ -58,8 +57,8 @@ public class PokerPolygonsTextualController implements PokerPolygonsController {
       throw new IllegalStateException("Failed to start game.", e); // **
     }
 
-    safeAppend(view.toString() + "\n");
-    safeAppend("Score: " + model.getScore() + "\n");
+    safeAppend(view.toString() + System.lineSeparator());
+    safeAppend("Score: " + model.getScore() + System.lineSeparator());
 
     try {
       while (scanner.hasNext()) {
@@ -93,13 +92,18 @@ public class PokerPolygonsTextualController implements PokerPolygonsController {
           try {
             model.placeCardInPosition(cardIdx0, row0, col0);
           } catch (IllegalArgumentException | IllegalStateException e) {
-            safeAppend("Invalid move. Play again. " + e.getMessage() + "\n");
-            safeAppend(view.toString() + "\n");
-            safeAppend("Score: " + model.getScore() + "\n");
+            safeAppend("Invalid move. Play again. " + e.getMessage() + System.lineSeparator());
+            safeAppend(view.toString() + System.lineSeparator());
+            safeAppend("Score: " + model.getScore() + System.lineSeparator());
             continue;
           }
-          safeAppend(view.toString() + "\n");
-          safeAppend("Score: " + model.getScore() + "\n");
+          // If the game is over after a successful move, handle the game-over case
+          if (model.isGameOver()) {
+            handleGameOverMessage(model);
+          } else {
+            safeAppend(view.toString() + System.lineSeparator());
+            safeAppend("Score: " + model.getScore() + System.lineSeparator());
+          }
 
         } else if (command.equals("discard")) {
           // Reading one natural number (1-indexed) for the card index.
@@ -114,27 +118,31 @@ public class PokerPolygonsTextualController implements PokerPolygonsController {
           try {
             model.discardCard(cardIdx0);
           } catch (IllegalArgumentException | IllegalStateException e) {
-            safeAppend("Invalid move. Play again. " + e.getMessage() + "\n");
-            safeAppend(view.toString() + "\n");
-            safeAppend("Score: " + model.getScore() + "\n");
+            safeAppend("Invalid move. Play again. " + e.getMessage() + System.lineSeparator());
+            safeAppend(view.toString() + System.lineSeparator());
+            safeAppend("Score: " + model.getScore() + System.lineSeparator());
             continue;
           }
-          safeAppend(view.toString() + "\n");
-          safeAppend("Score: " + model.getScore() + "\n");
+          safeAppend(view.toString() + System.lineSeparator());
+          safeAppend("Score: " + model.getScore() + System.lineSeparator());
         }
         // Invalid commands that are not "place", "discard", "Q/q", or a natural number
         else {
-          safeAppend("Invalid move. Play again. Unrecognized command: " + command + "\n");
+          safeAppend("Invalid move. Play again. Unrecognized command: " + command + System.lineSeparator());
+        }
+        if (!scanner.hasNext()) {
+          throw new IllegalStateException("Ran out of input unexpectedly.");
         }
 
         if (model.isGameOver()) {
-          safeAppend(view.toString() + "\n");
-          safeAppend("Game over. Score: " + model.getScore() + "\n");
           return;
         }
       }
+      // If we exit the loop unexpectedly (meaning input ran out), throw an error.
+      throw new IllegalStateException("Ran out of input unexpectedly.");
+
     } catch (Exception e) {
-      throw new IllegalStateException("Failed to receive input.", e); //**
+      throw new IllegalStateException("Failed to read input.", e);
     }
   }
 
@@ -154,7 +162,7 @@ public class PokerPolygonsTextualController implements PokerPolygonsController {
       }
       try {
         int num = Integer.parseInt(token);
-        if (num < 1) continue;
+        if (num < 0) continue;
         return num;
       } catch (NumberFormatException e) {
         // Silently ignore invalid numeric input.
@@ -174,6 +182,7 @@ public class PokerPolygonsTextualController implements PokerPolygonsController {
   private <C extends Card> void quitGame(PokerPolygons<C> model, PokerPolygonsTextualView view) {
     safeAppend("Game quit!\n"
             + "State of game when quit:\n"
+            + view.toString() + System.lineSeparator()
             + "Score: " + model.getScore());
   }
 
@@ -189,5 +198,13 @@ public class PokerPolygonsTextualController implements PokerPolygonsController {
     } catch (IOException e) {
       throw new IllegalStateException("Failed to transmit output.", e);
     }
+  }
+
+  /**
+   * To handle correct messaging when the game is over.
+   * @param model is the model of the game.
+   */
+  private <C extends Card> void handleGameOverMessage(PokerPolygons<C> model) {
+    safeAppend("Game over. Score: " + model.getScore() + System.lineSeparator());
   }
 }

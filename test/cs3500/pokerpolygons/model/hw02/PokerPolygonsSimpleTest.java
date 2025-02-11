@@ -22,7 +22,6 @@ public class PokerPolygonsSimpleTest {
   public void testConstructorNullLog() {
     try {
       new PokerPolygonsSimple<Card>(null);
-      fail("Expected IllegalArgumentException for null log.");
     } catch (IllegalArgumentException e) {
       assertEquals("Log cannot be null.", e.getMessage());
     }

@@ -31,7 +31,6 @@ public class PokerPolygonsSimple<C extends Card> implements PokerPolygons<C> {
    * @param log the StringBuilder used to record method calls.
    * @throws IllegalArgumentException if log is null.
    */
-  // TODO: Test the constructor throws the exception correctly
   public PokerPolygonsSimple(StringBuilder log) {
     if (log == null) {
       throw new IllegalArgumentException("Log cannot be null.");

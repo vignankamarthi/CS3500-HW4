@@ -4,7 +4,6 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Deque;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
@@ -15,14 +14,12 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import cs3500.pokerpolygons.model.hw02.Ranks;
-import cs3500.pokerpolygons.model.hw02.Suits;
 import cs3500.pokerpolygons.view.PokerTrianglesTextualView;
 
 
 /**
- * Comprehensive test suite that ensures every IllegalArgumentException
- * is properly thrown in PokerTriangles.
+ * Tests for the PokerTriangle class including exceptions, general behavior,
+ * and edge case behavior.
  */
 public class PokerTrianglesTest {
 
@@ -81,9 +78,6 @@ public class PokerTrianglesTest {
     } catch (IllegalArgumentException e) {
       assertEquals("Card index out of bounds of the hand: 10", e.getMessage());
     }
-
-
-
 
   }
 
