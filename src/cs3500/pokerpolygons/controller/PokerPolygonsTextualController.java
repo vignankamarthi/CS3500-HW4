@@ -42,18 +42,20 @@ public class PokerPolygonsTextualController implements PokerPolygonsController {
    *     transmit output, or if the game cannot be started
    * @throws IllegalArgumentException if the model or view are null
    */
+  //TODO: Factor out exceptions with helper BESIDES tests marked with **
+  //TODO: AFTER EVERYTHING, factor things out to a command pattern (remember, you have to test it all so check if its worth it)
   @Override
   public <C extends Card> void playGame(PokerPolygons<C> model, PokerPolygonsTextualView view,
                                         List<C> deck, boolean shuffle, int handSize) {
     if (model == null || view == null) {
-      throw new IllegalArgumentException("Model or view cannot be null.");
+      throw new IllegalArgumentException("Model or view cannot be null."); // **
     }
 
     Scanner scanner = new Scanner(this.input);
     try {
       model.startGame(deck, shuffle, handSize);
     } catch (Exception e) {
-      throw new IllegalStateException("Failed to start game.", e);
+      throw new IllegalStateException("Failed to start game.", e); // **
     }
 
     safeAppend(view.toString() + "\n");
@@ -90,7 +92,7 @@ public class PokerPolygonsTextualController implements PokerPolygonsController {
           // Invoking the placeCardInPosition method
           try {
             model.placeCardInPosition(cardIdx0, row0, col0);
-          } catch (IllegalArgumentException e) {
+          } catch (IllegalArgumentException | IllegalStateException e) {
             safeAppend("Invalid move. Play again. " + e.getMessage() + "\n");
             safeAppend(view.toString() + "\n");
             safeAppend("Score: " + model.getScore() + "\n");
@@ -111,7 +113,7 @@ public class PokerPolygonsTextualController implements PokerPolygonsController {
           // Invoking the discardCard method
           try {
             model.discardCard(cardIdx0);
-          } catch (IllegalArgumentException e) {
+          } catch (IllegalArgumentException | IllegalStateException e) {
             safeAppend("Invalid move. Play again. " + e.getMessage() + "\n");
             safeAppend(view.toString() + "\n");
             safeAppend("Score: " + model.getScore() + "\n");
@@ -132,7 +134,7 @@ public class PokerPolygonsTextualController implements PokerPolygonsController {
         }
       }
     } catch (Exception e) {
-      throw new IllegalStateException("Failed to receive input.", e);
+      throw new IllegalStateException("Failed to receive input.", e); //**
     }
   }
 
