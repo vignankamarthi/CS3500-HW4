@@ -9,7 +9,6 @@ import java.io.IOException;
  * This view returns a fixed string to represent the model's state.
  */
 public class PokerTrianglesTextualViewSimple<C extends Card>  implements PokerPolygonsTextualView {
-  private final PokerPolygons<C> model;
 
   /**
    * Constructs a simple textual view for the given model.
@@ -21,7 +20,6 @@ public class PokerTrianglesTextualViewSimple<C extends Card>  implements PokerPo
     if (model == null) {
       throw new IllegalArgumentException("Model cannot be null.");
     }
-    this.model = model;
   }
 
   /**

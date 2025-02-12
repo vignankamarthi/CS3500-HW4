@@ -6,6 +6,7 @@ import cs3500.pokerpolygons.model.hw02.PokerPolygonsSimple;
 import cs3500.pokerpolygons.model.hw02.Ranks;
 import cs3500.pokerpolygons.model.hw02.StandardPlayingCard;
 import cs3500.pokerpolygons.model.hw02.Suits;
+import cs3500.pokerpolygons.view.PokerPolygonsTextualView;
 import cs3500.pokerpolygons.view.PokerTrianglesTextualViewSimple;
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -13,10 +14,6 @@ import java.util.List;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-
-//TODO: Write tests for BOTH unit and integration:
-// * the model waits after "nonesense is typed" for placeCard, then places the card after receiving a valid input
-// * the model waits after "nonesense is typed" for discardCard, then places the card after receiving a valid input
 
 
 /**
@@ -182,7 +179,8 @@ public class PokerPolygonsTextualControllerTest {
     List<PlayingCard> deck = createDummyDeck();
 
     // Using the mock view
-    PokerTrianglesTextualViewSimple<PlayingCard> view = new PokerTrianglesTextualViewSimple<>(mockModel);
+    PokerTrianglesTextualViewSimple<PlayingCard> view =
+            new PokerTrianglesTextualViewSimple<>(mockModel);
 
     // Create the controller and start the game
     PokerPolygonsTextualController controller = new PokerPolygonsTextualController(input, output);
@@ -216,7 +214,8 @@ public class PokerPolygonsTextualControllerTest {
     List<PlayingCard> deck = createDummyDeck();
 
     // Using the mock view
-    PokerTrianglesTextualViewSimple<PlayingCard> view = new PokerTrianglesTextualViewSimple<>(mockModel);
+    PokerTrianglesTextualViewSimple<PlayingCard> view =
+            new PokerTrianglesTextualViewSimple<>(mockModel);
 
     // Create the controller and start the game
     PokerPolygonsTextualController controller = new PokerPolygonsTextualController(input, output);
@@ -238,7 +237,8 @@ public class PokerPolygonsTextualControllerTest {
 
   @Test
   public void testControllerWithMockModelAndView() {
-    StringReader input = new StringReader("place 1 1 1 place 2 2 2 place 3 3 3 place 4 4 4 place 5 5 5 q");
+    StringReader input =
+            new StringReader("place 1 1 1 place 2 2 2 place 3 3 3 place 4 4 4 place 5 5 5 q");
     StringBuilder log = new StringBuilder();
     StringBuilder output = new StringBuilder();
 
@@ -246,7 +246,8 @@ public class PokerPolygonsTextualControllerTest {
     List<PlayingCard> deck = model.getNewDeck();
 
     // Using the mock model and mock view, but real controller
-    PokerTrianglesTextualViewSimple<PlayingCard> view = new PokerTrianglesTextualViewSimple<>(model);
+    PokerTrianglesTextualViewSimple<PlayingCard> view =
+            new PokerTrianglesTextualViewSimple<>(model);
     PokerPolygonsTextualController controller = new PokerPolygonsTextualController(input, output);
 
     controller.playGame(model, view, deck, false, 5);
@@ -301,5 +302,68 @@ public class PokerPolygonsTextualControllerTest {
 
     assertEquals(expectedOutput, output.toString());
   }
+
+  /**
+   * Tests that the controller ignores invalid input (nonsense),
+   * waits for valid input, and correctly places a card after receiving a proper command.
+   *
+   */
+  @Test
+  public void testPlaceCardIgnoresNonsenseThenPlacesCard() {
+    StringBuilder log = new StringBuilder();
+    PokerPolygonsSimple model = new PokerPolygonsSimple(log);
+    PokerPolygonsTextualView view = new PokerTrianglesTextualViewSimple<>(model);
+
+    Readable input = new StringReader("nonsense nonsense -1 place nonsense 1 2 3\n\n q");
+    Appendable output = new StringBuilder();
+    PokerPolygonsTextualController controller = new PokerPolygonsTextualController(input, output);
+
+    controller.playGame(model, view, new ArrayList<>(), false, 5);
+
+    String expectedLog =
+            "startGame(deckSize = 0, shuffle = false, handSize = 5) called. " +
+                    "getScore() called. " +
+                    "isGameOver() called. " +
+                    "isGameOver() called. " +
+                    "isGameOver() called. " +
+                    "placeCardInPosition(0, 1, 2) called. " +
+                    "isGameOver() called. " +
+                    "getScore() called. " +
+                    "isGameOver() called. " +
+                    "getScore() called. ";
+
+    assertEquals(expectedLog, model.getLog());
+  }
+
+  /**
+   * Tests that the controller ignores invalid input (nonsense),
+   * waits for valid input, and correctly discards a card after receiving a proper command.
+   */
+  @Test
+  public void testDiscardIgnoresNonsenseThenDiscardsCard() {
+    StringBuilder log = new StringBuilder();
+    PokerPolygonsSimple model = new PokerPolygonsSimple(log);
+    PokerPolygonsTextualView view = new PokerTrianglesTextualViewSimple<>(model);
+
+    Readable input = new StringReader("random gibberish -5 discard blah 2\n\n q");
+    Appendable output = new StringBuilder();
+    PokerPolygonsTextualController controller = new PokerPolygonsTextualController(input, output);
+
+    controller.playGame(model, view, new ArrayList<>(), false, 5);
+
+    String expectedLog =
+            "startGame(deckSize = 0, shuffle = false, handSize = 5) called. " +
+                    "getScore() called. " +
+                    "isGameOver() called. " +
+                    "isGameOver() called. " +
+                    "isGameOver() called. " +
+                    "discardCard(1) called" +
+                    "getScore() called. " +
+                    "isGameOver() called. " +
+                    "getScore() called. ";
+
+    assertEquals(expectedLog, model.getLog());
+  }
+
 
 }

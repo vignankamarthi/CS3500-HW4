@@ -3,7 +3,6 @@ package cs3500.pokerpolygons.model.hw02;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
@@ -438,7 +437,6 @@ public class PokerTriangles implements PokerPolygons<PlayingCard> {
    * @param result the list that accumulates all valid 5-card combinations;
    *               should be empty when first invoked
    */
-  //TODO: Understand this method
   private void generateCombinations(List<PlayingCard> hand, int start,
                                     List<PlayingCard> current, List<List<PlayingCard>> result) {
     if (current.size() == 5) {

@@ -322,8 +322,8 @@ public class PokerTrianglesTextualViewTest {
   public void testConstructorThrowsExceptionForNullModel() {
     try {
       new PokerTrianglesTextualView<PlayingCard>(null);
-      fail("Expected IllegalArgumentException to be thrown, but it was not.");
     } catch (IllegalArgumentException e) {
+      assertEquals("Model cannot be null.", e.getMessage());
     }
   }
 

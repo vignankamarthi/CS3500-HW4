@@ -42,107 +42,71 @@ public class PokerPolygonsTextualController implements PokerPolygonsController {
    *     transmit output, or if the game cannot be started
    * @throws IllegalArgumentException if the model or view are null
    */
-  //TODO: Factor out exceptions with helper BESIDES tests marked with **
   @Override
   public <C extends Card> void playGame(PokerPolygons<C> model, PokerPolygonsTextualView view,
                                         List<C> deck, boolean shuffle, int handSize) {
     if (model == null || view == null) {
-      throw new IllegalArgumentException("Model or view cannot be null."); // **
+      throw new IllegalArgumentException("Model or view cannot be null.");
     }
-
     Scanner scanner = new Scanner(this.input);
     try {
       model.startGame(deck, shuffle, handSize);
     } catch (Exception e) {
-      throw new IllegalStateException("Failed to start game.", e); // **
+      throw new IllegalStateException("Failed to start game.", e);
     }
-
     safeAppend(view.toString() + System.lineSeparator());
     safeAppend("Score: " + model.getScore() + System.lineSeparator());
-
     try {
       while (scanner.hasNext()) {
         String command = scanner.next();
         if (command.equalsIgnoreCase("q")) {
           quitGame(model, view);
           return;
-        } else if (command.equals("place")) {
-          // Reading three natural numbers (1-indexed) for card index, row, and column.
-          Integer cardIndex = readNaturalNumber(scanner);
-          if (cardIndex == null) {
-            quitGame(model, view);
+        }
+        else if (command.equals("place")) {
+          Integer cardIndex = readInputNumberOrQuit(scanner, model, view);
+          Integer row = readInputNumberOrQuit(scanner, model, view);
+          Integer col = readInputNumberOrQuit(scanner, model, view);
+          if (cardIndex == null || row == null || col == null) {
             return;
           }
-          Integer row = readNaturalNumber(scanner);
-          if (row == null) {
-            quitGame(model, view);
-            return;
-          }
-          Integer col = readNaturalNumber(scanner);
-          if (col == null) {
-            quitGame(model, view);
-            return;
-          }
-
           int cardIdx0 = cardIndex - 1;
           int row0 = row - 1;
           int col0 = col - 1;
-
-          // Invoking the placeCardInPosition method
-          try {
-            model.placeCardInPosition(cardIdx0, row0, col0);
-          } catch (IllegalArgumentException | IllegalStateException e) {
-            safeAppend("Invalid move. Play again. " + e.getMessage() + System.lineSeparator());
-            safeAppend(view.toString() + System.lineSeparator());
-            safeAppend("Score: " + model.getScore() + System.lineSeparator());
-            continue;
-          }
-          // If the game is over after a successful move, handle the game-over case
-          if (model.isGameOver()) {
-            handleGameOverMessage(model);
-          } else {
-            safeAppend(view.toString() + System.lineSeparator());
-            safeAppend("Score: " + model.getScore() + System.lineSeparator());
-          }
-
+          placeCardInPosition(model, view, cardIdx0, row0, col0);
         } else if (command.equals("discard")) {
-          // Reading one natural number (1-indexed) for the card index.
           Integer cardIndex = readNaturalNumber(scanner);
           if (cardIndex == null) {
             quitGame(model, view);
             return;
           }
           int cardIdx0 = cardIndex - 1;
-
-          // Invoking the discardCard method
-          try {
-            model.discardCard(cardIdx0);
-          } catch (IllegalArgumentException | IllegalStateException e) {
-            safeAppend("Invalid move. Play again. " + e.getMessage() + System.lineSeparator());
-            safeAppend(view.toString() + System.lineSeparator());
-            safeAppend("Score: " + model.getScore() + System.lineSeparator());
-            continue;
-          }
-          safeAppend(view.toString() + System.lineSeparator());
-          safeAppend("Score: " + model.getScore() + System.lineSeparator());
+          discardCard(model, view, cardIdx0);
         }
-        // Invalid commands that are not "place", "discard", "Q/q", or a natural number
         else {
-          safeAppend("Invalid move. Play again. Unrecognized command: " + command + System.lineSeparator());
+          safeAppend("Invalid move. Play again. Unrecognized command: " +
+                  command + System.lineSeparator());
         }
-        if (!scanner.hasNext()) {
-          throw new IllegalStateException("Ran out of input unexpectedly.");
-        }
-
+        checkInputAvailable(scanner);
         if (model.isGameOver()) {
           return;
         }
       }
-      // If we exit the loop unexpectedly (meaning input ran out), throw an error.
-      throw new IllegalStateException("Ran out of input unexpectedly.");
-
+      checkInputAvailable(scanner);
     } catch (Exception e) {
       throw new IllegalStateException("Failed to read input.", e);
+    }
+  }
+
+  /**
+   * Checks if input is available in the scanner and throws an exception if not.
+   *
+   * @param scanner the Scanner to check input availability
+   * @throws IllegalStateException if input runs out unexpectedly
+   */
+  private void checkInputAvailable(Scanner scanner) {
+    if (!scanner.hasNext()) {
+      throw new IllegalStateException("Ran out of input unexpectedly.");
     }
   }
 
@@ -162,7 +126,9 @@ public class PokerPolygonsTextualController implements PokerPolygonsController {
       }
       try {
         int num = Integer.parseInt(token);
-        if (num < 0) continue;
+        if (num < 0) {
+          continue;
+        }
         return num;
       } catch (NumberFormatException e) {
         // Silently ignore invalid numeric input.
@@ -207,4 +173,87 @@ public class PokerPolygonsTextualController implements PokerPolygonsController {
   private <C extends Card> void handleGameOverMessage(PokerPolygons<C> model) {
     safeAppend("Game over. Score: " + model.getScore() + System.lineSeparator());
   }
+
+  /**
+   * Reads a natural number from the scanner or quits if "q" is entered.
+   * If invalid input is encountered, it keeps scanning until a valid number or "q" is provided.
+   *
+   * @param scanner the Scanner to read input from
+   * @param model the game model
+   * @param view the view
+   * @return the valid natural number read, or null if "q" was encountered.
+   */
+  private Integer readInputNumberOrQuit(Scanner scanner, PokerPolygons<?> model,
+                                        PokerPolygonsTextualView view) {
+    while (scanner.hasNext()) {
+      String token = scanner.next();
+      if (token.equalsIgnoreCase("q")) {
+        quitGame(model, view);
+        return null;
+      }
+      try {
+        int num = Integer.parseInt(token);
+        if (num > 0) {
+          return num;
+        } // Making sure to only return valid natural numbers
+      } catch (NumberFormatException ignored) {
+        // Continue looping until valid input
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Attempts to place a card in the given position and handles exceptions.
+   *
+   * @param model the game model
+   * @param view the game view
+   * @param cardIdx0 the zero-based index of the card in hand
+   * @param row0 the zero-based row index
+   * @param col0 the zero-based column index
+   */
+  private <C extends Card> void placeCardInPosition(PokerPolygons<C> model,
+                                                    PokerPolygonsTextualView view,
+                                                    int cardIdx0, int row0, int col0) {
+    try {
+      model.placeCardInPosition(cardIdx0, row0, col0);
+    } catch (IllegalArgumentException | IllegalStateException e) {
+      safeAppend("Invalid move. Play again. " + e.getMessage() + System.lineSeparator());
+      safeAppend(view.toString() + System.lineSeparator());
+      safeAppend("Score: " + model.getScore() + System.lineSeparator());
+      return;
+    }
+
+    // If the game is over after a successful move, handle the game-over case
+    if (model.isGameOver()) {
+      handleGameOverMessage(model);
+    } else {
+      safeAppend(view.toString() + System.lineSeparator());
+      safeAppend("Score: " + model.getScore() + System.lineSeparator());
+    }
+  }
+
+  /**
+   * Attempts to discard a card at the given index and handles exceptions.
+   *
+   * @param model the game model
+   * @param view the game view
+   * @param cardIdx0 the zero-based index of the card in hand
+   */
+  private <C extends Card> void discardCard(PokerPolygons<C> model,
+                                            PokerPolygonsTextualView view,
+                                            int cardIdx0) {
+    try {
+      model.discardCard(cardIdx0);
+    } catch (IllegalArgumentException | IllegalStateException e) {
+      safeAppend("Invalid move. Play again. " + e.getMessage() + System.lineSeparator());
+      safeAppend(view.toString() + System.lineSeparator());
+      safeAppend("Score: " + model.getScore() + System.lineSeparator());
+      return;
+    }
+
+    safeAppend(view.toString() + System.lineSeparator());
+    safeAppend("Score: " + model.getScore() + System.lineSeparator());
+  }
+
 }

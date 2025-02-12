@@ -471,4 +471,107 @@ public class PokerPolygonsIntegrationTests {
     assertEquals(expectedOutput, output.toString());
   }
 
+  /**
+   * Integration test to ensures the controller ignores invalid input,
+   * waits for valid input, and correctly places a card after receiving a valid command.
+   */
+  @Test
+  public void testIntegrationPlaceCardIgnoresNonsenseThenPlacesCard() {
+    StringReader input = new StringReader("nonsense place nonsense 1 1 1 q");
+    StringBuilder output = new StringBuilder();
+
+    PokerPolygons<PlayingCard> model = new PokerTriangles(5);
+    List<PlayingCard> deck = model.getNewDeck();
+    PokerPolygonsTextualView view = new PokerTrianglesTextualView(model);
+    PokerPolygonsTextualController controller = new PokerPolygonsTextualController(input, output);
+
+    controller.playGame(model, view, deck, false, 5);
+
+    String expectedOutput =
+            " __" + System.lineSeparator() +
+                    " __  __" + System.lineSeparator() +
+                    " __  __  __" + System.lineSeparator() +
+                    " __  __  __  __" + System.lineSeparator() +
+                    " __  __  __  __  __" + System.lineSeparator() +
+                    "Deck: 47" + System.lineSeparator() +
+                    "Hand: 2♣, 2♢, 2♡, 2♠, 3♣" + System.lineSeparator() +
+                    "Score: 0" + System.lineSeparator() +
+                    "Invalid move. Play again. Unrecognized command: nonsense" +
+                    System.lineSeparator() +
+                    " 2♣" + System.lineSeparator() +
+                    " __  __" + System.lineSeparator() +
+                    " __  __  __" + System.lineSeparator() +
+                    " __  __  __  __" + System.lineSeparator() +
+                    " __  __  __  __  __" + System.lineSeparator() +
+                    "Deck: 46" + System.lineSeparator() +
+                    "Hand: 2♢, 2♡, 2♠, 3♣, 3♢" + System.lineSeparator() +
+                    "Score: 0" + System.lineSeparator() +
+                    "Game quit!" + System.lineSeparator() +
+                    "State of game when quit:" + System.lineSeparator() +
+                    " 2♣" + System.lineSeparator() +
+                    " __  __" + System.lineSeparator() +
+                    " __  __  __" + System.lineSeparator() +
+                    " __  __  __  __" + System.lineSeparator() +
+                    " __  __  __  __  __" + System.lineSeparator() +
+                    "Deck: 46" + System.lineSeparator() +
+                    "Hand: 2♢, 2♡, 2♠, 3♣, 3♢" + System.lineSeparator() +
+                    "Score: 0";
+
+    assertEquals(expectedOutput, output.toString());
+  }
+
+  /**
+   * Integration test to ensures the controller ignores invalid input,
+   * waits for valid input, and correctly discards a card after receiving a valid command.
+   */
+  @Test
+  public void testIntegrationDiscardIgnoresNonsenseThenDiscardsCard() {
+    StringReader input = new StringReader("random gibberish -5 discard blah 2\n\n q");
+    StringBuilder output = new StringBuilder();
+
+    PokerPolygons<PlayingCard> model = new PokerTriangles(5);
+    List<PlayingCard> deck = model.getNewDeck();
+    PokerPolygonsTextualView view = new PokerTrianglesTextualView(model);
+    PokerPolygonsTextualController controller = new PokerPolygonsTextualController(input, output);
+
+    controller.playGame(model, view, deck, false, 5);
+
+    String expectedOutput =
+            " __" + System.lineSeparator() +
+                    " __  __" + System.lineSeparator() +
+                    " __  __  __" + System.lineSeparator() +
+                    " __  __  __  __" + System.lineSeparator() +
+                    " __  __  __  __  __" + System.lineSeparator() +
+                    "Deck: 47" + System.lineSeparator() +
+                    "Hand: 2♣, 2♢, 2♡, 2♠, 3♣" + System.lineSeparator() +
+                    "Score: 0" + System.lineSeparator() +
+                    "Invalid move. Play again. Unrecognized command: random" +
+                    System.lineSeparator() +
+                    "Invalid move. Play again. Unrecognized command: gibberish" +
+                    System.lineSeparator() +
+                    "Invalid move. Play again. Unrecognized command: -5" + System.lineSeparator() +
+                    " __" + System.lineSeparator() +
+                    " __  __" + System.lineSeparator() +
+                    " __  __  __" + System.lineSeparator() +
+                    " __  __  __  __" + System.lineSeparator() +
+                    " __  __  __  __  __" + System.lineSeparator() +
+                    "Deck: 46" + System.lineSeparator() +
+                    "Hand: 2♣, 2♡, 2♠, 3♣, 3♢" + System.lineSeparator() +
+                    "Score: 0" + System.lineSeparator() +
+                    "Game quit!" + System.lineSeparator() +
+                    "State of game when quit:" + System.lineSeparator() +
+                    " __" + System.lineSeparator() +
+                    " __  __" + System.lineSeparator() +
+                    " __  __  __" + System.lineSeparator() +
+                    " __  __  __  __" + System.lineSeparator() +
+                    " __  __  __  __  __" + System.lineSeparator() +
+                    "Deck: 46" + System.lineSeparator() +
+                    "Hand: 2♣, 2♡, 2♠, 3♣, 3♢" + System.lineSeparator() +
+                    "Score: 0";
+
+    assertEquals(expectedOutput, output.toString());
+  }
+
+
+
 }

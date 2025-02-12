@@ -8,7 +8,6 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 /**
  * Tests for the PokerPolygonsSimple mock implementation.
@@ -63,7 +62,8 @@ public class PokerPolygonsSimpleTest {
     deck.add(new StandardPlayingCard(Ranks.FOUR, Suits.CLUBS));
     deck.add(new StandardPlayingCard(Ranks.FIVE, Suits.CLUBS));
     mock.startGame(deck, false, 3);
-    assertTrue(log.toString().contains("startGame(deckSize = 5, shuffle = false, handSize = 3) called."));
+    assertTrue(log.toString().contains("startGame(deckSize = 5, shuffle = false, " +
+            "handSize = 3) called."));
     // Verify that the hand now contains the first 3 cards.
     List<Card> hand = mock.getHand();
     assertEquals(3, hand.size());

@@ -439,7 +439,7 @@ public class PokerTrianglesTest {
     game1.startGame(deck1, false, 5); // No shuffle
     game2.startGame(deck2, true, 5);  // With shuffle
 
-    assertNotEquals(game1.getHand(), game2.getHand()); // Hands should be different// Hands should be different
+    assertNotEquals(game1.getHand(), game2.getHand());
   }
 
 
@@ -1075,12 +1075,7 @@ public class PokerTrianglesTest {
     assertEquals(75, game.getScore()); // Middle straight flush should score 75
   }
 
-  /**
-   * Test that playing a full game with a board of side length 6 works correctly.
-   */
-  /**
-   * Test that playing a full game with a board of side length 6 results in the expected board state.
-   */
+
   /**
    * Test that playing a full game with a board of side length 6 results in the expected score.
    */

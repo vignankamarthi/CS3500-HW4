@@ -2,17 +2,15 @@ package cs3500.pokerpolygons.view;
 
 import cs3500.pokerpolygons.model.hw02.PlayingCard;
 import cs3500.pokerpolygons.model.hw02.PokerTriangles;
-import cs3500.pokerpolygons.model.hw02.Ranks;
-import cs3500.pokerpolygons.model.hw02.StandardPlayingCard;
-import cs3500.pokerpolygons.model.hw02.Suits;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.fail;
 
 /**
  * Tests for the simple textual view implementation.
@@ -20,20 +18,18 @@ import java.util.Random;
 public class PokerTrianglesTextualViewSimpleTest {
   private PokerTrianglesTextualViewSimple<PlayingCard> emptyView;
   private PokerTrianglesTextualViewSimple<PlayingCard> populatedView;
-  private PokerTriangles emptyGame;
-  private PokerTriangles populatedGame;
 
   @Before
   public void setUp() {
     Random seededRandom = new Random(8); // Ensure deterministic deck order
 
     // Creating an empty game with side length 5 with a seeded deck and shuffle enabled
-    emptyGame = new PokerTriangles(5, seededRandom);
+    PokerTriangles emptyGame = new PokerTriangles(5, seededRandom);
     emptyGame.startGame(emptyGame.getNewDeck(), true, 4);
     emptyView = new PokerTrianglesTextualViewSimple<>(emptyGame);
 
     // Creating a populated game with side length 7 with a seeded deck and shuffle disabled
-    populatedGame = new PokerTriangles(7, seededRandom);
+    PokerTriangles populatedGame = new PokerTriangles(7, seededRandom);
     populatedGame.startGame(emptyGame.getNewDeck(), false, 4);
     populatedView = new PokerTrianglesTextualViewSimple<>(populatedGame);
   }
@@ -61,7 +57,8 @@ public class PokerTrianglesTextualViewSimpleTest {
   }
 
   /**
-   * Tests that render(Appendable) appends the view's string representation to a non-empty Appendable.
+   * Tests that render(Appendable) appends the
+   * view's string representation to a non-empty Appendable.
    */
   @Test
   public void testRenderAppendsToNonEmptyAppendable() {
@@ -88,6 +85,7 @@ public class PokerTrianglesTextualViewSimpleTest {
    */
   @Test
   public void testConstructorThrowsExceptionForNullModel() {
-    assertThrows(IllegalArgumentException.class, () -> new PokerTrianglesTextualViewSimple<PlayingCard>(null));
+    assertThrows(IllegalArgumentException.class, () ->
+            new PokerTrianglesTextualViewSimple<PlayingCard>(null));
   }
 }
