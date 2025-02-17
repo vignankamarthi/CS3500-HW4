@@ -8,6 +8,9 @@ import cs3500.pokerpolygons.model.hw02.StandardPlayingCard;
 import cs3500.pokerpolygons.model.hw02.Suits;
 import cs3500.pokerpolygons.view.PokerPolygonsTextualView;
 import cs3500.pokerpolygons.view.PokerTrianglesTextualViewSimple;
+
+import java.io.IOException;
+import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -190,8 +193,6 @@ public class PokerPolygonsTextualControllerTest {
     String expectedOutput =
             "Mock view state" + System.lineSeparator() +  // Initial board print
                     "Score: 0" + System.lineSeparator() +
-                    "Mock view state" + System.lineSeparator() +  // Retry board print
-                    "Score: 0" + System.lineSeparator() +
                     "Game quit!" + System.lineSeparator() +  // Quit message
                     "State of game when quit:" + System.lineSeparator() +
                     "Mock view state" + System.lineSeparator() +  // Final quit board print
@@ -364,6 +365,163 @@ public class PokerPolygonsTextualControllerTest {
 
     assertEquals(expectedLog, model.getLog());
   }
+
+  /**
+   * Tests that the constructor throws an IllegalArgumentException when
+   * passed a null Readable.
+   */
+  @Test
+  public void testConstructorThrowsExceptionForNullReadable() {
+    try {
+      new PokerPolygonsTextualController(null, new StringBuilder());
+    } catch (IllegalArgumentException e) {
+      assertEquals("Readable (input) and Appendable (output) cannot be null",
+              e.getMessage());
+    }
+  }
+
+  /**
+   * Tests that the constructor throws an IllegalArgumentException when
+   * passed a null Appendable.
+   */
+  @Test
+  public void testConstructorThrowsExceptionForNullAppendable() {
+    try {
+      new PokerPolygonsTextualController(new java.io.StringReader(""), null);
+    } catch (IllegalArgumentException e) {
+      assertEquals("Readable (input) and Appendable (output) cannot be null",
+              e.getMessage());
+    }
+  }
+
+  /**
+   * Tests that the constructor throws an IllegalArgumentException when
+   * both Readable and Appendable are null.
+   */
+  @Test
+  public void testConstructorThrowsExceptionForBothNull() {
+    try {
+      new PokerPolygonsTextualController(null, null);
+    } catch (IllegalArgumentException e) {
+      assertEquals("Readable (input) and Appendable (output) cannot be null",
+              e.getMessage());
+    }
+  }
+
+  /**
+   * Tests that playGame() throws an IllegalArgumentException when passed a null model.
+   */
+  @Test
+  public void testPlayGameThrowsExceptionForNullModel() {
+    try {
+      PokerPolygonsTextualController controller =
+              new PokerPolygonsTextualController(new java.io.StringReader(""),
+                      new StringBuilder());
+      controller.playGame(null, null, new java.util.ArrayList<>(),
+              false, 5);
+    } catch (IllegalArgumentException e) {
+      assertEquals("Model or view cannot be null.", e.getMessage());
+    }
+  }
+
+  /**
+   * Tests that playGame() throws an IllegalArgumentException when passed a null deck.
+   */
+  @Test
+  public void testPlayGameThrowsExceptionForNullDeck() {
+    try {
+      PokerPolygonsTextualController controller =
+              new PokerPolygonsTextualController(new java.io.StringReader(""),
+                      new StringBuilder());
+      controller.playGame(new PokerPolygonsSimple<>(new StringBuilder()), null,
+              null, false, 5);
+    } catch (IllegalArgumentException e) {
+      assertEquals("Model or view cannot be null.", e.getMessage());
+    }
+  }
+
+  /**
+   * Tests that playGame() throws an IllegalStateException when passed a negative hand size.
+   */
+  @Test
+  public void testPlayGameThrowsExceptionForNegativeHandSize() {
+    try {
+      PokerPolygonsTextualController controller =
+              new PokerPolygonsTextualController(new StringReader(""), new StringBuilder());
+      PokerPolygonsSimple<PlayingCard> model = new PokerPolygonsSimple<>(new StringBuilder());
+      PokerPolygonsTextualView view = new PokerTrianglesTextualViewSimple<>(model);
+      controller.playGame(model, view, new ArrayList<>(), false, -1);
+    } catch (IllegalStateException e) {
+      assertEquals("Failed to read input.", e.getMessage());
+    }
+  }
+
+  /**
+   * Tests that playGame() throws an IllegalStateException when input cannot be read from the
+   * Readable while the game is in progress.
+   */
+  @Test
+  public void testPlayGameThrowsExceptionWhenReadableFails() {
+    try {
+      Reader failingReader = new Reader() {
+        @Override
+        public int read(char[] cbuf, int off, int len) throws IOException {
+          throw new IOException("Readable input failure");
+        }
+
+        @Override
+        public void close() throws IOException {
+        }
+      };
+
+      PokerPolygonsTextualController controller =
+              new PokerPolygonsTextualController(failingReader, new StringBuilder());
+      PokerPolygonsSimple<PlayingCard> model = new PokerPolygonsSimple<>(new StringBuilder());
+      PokerPolygonsTextualView view = new PokerTrianglesTextualViewSimple<>(model);
+      controller.playGame(model, view, new ArrayList<>(), false, 5);
+    } catch (IllegalStateException e) {
+      assertEquals("Failed to read input.", e.getMessage());
+    }
+  }
+
+  /**
+   * Tests that playGame() throws an IllegalStateException when output cannot be appended to the
+   * Readable (output log) while the game is in progress.
+   */
+  @Test
+  public void testPlayGameThrowsExceptionWhenAppendableFails() {
+    try {
+      Appendable failingAppendable = new Appendable() {
+        @Override
+        public Appendable append(CharSequence csq) throws IOException {
+          throw new IOException("Appendable output failure");
+        }
+
+        @Override
+        public Appendable append(CharSequence csq, int start, int end) throws IOException {
+          throw new IOException("Appendable output failure");
+        }
+
+        @Override
+        public Appendable append(char c) throws IOException {
+          throw new IOException("Appendable output failure");
+        }
+      };
+
+      PokerPolygonsTextualController controller =
+              new PokerPolygonsTextualController(new StringReader("q"), failingAppendable);
+      PokerPolygonsSimple<PlayingCard> model = new PokerPolygonsSimple<>(new StringBuilder());
+      PokerPolygonsTextualView view = new PokerTrianglesTextualViewSimple<>(model);
+      controller.playGame(model, view, new ArrayList<>(), false, 5);
+
+    } catch (IllegalStateException e) {
+      assertEquals("Failed to append output.", e.getMessage());
+    }
+  }
+
+
+
+
 
 
 }

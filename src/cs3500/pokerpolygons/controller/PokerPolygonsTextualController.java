@@ -162,7 +162,7 @@ public class PokerPolygonsTextualController implements PokerPolygonsController {
     try {
       this.output.append(s);
     } catch (IOException e) {
-      throw new IllegalStateException("Failed to transmit output.", e);
+      throw new IllegalStateException("Failed to append output.", e);
     }
   }
 
