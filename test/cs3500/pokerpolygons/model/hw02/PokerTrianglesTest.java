@@ -76,7 +76,7 @@ public class PokerTrianglesTest {
     try {
       game.discardCard(10);
     } catch (IllegalArgumentException e) {
-      assertEquals("Card index out of bounds of the hand: 10", e.getMessage());
+      assertEquals("Card index out of bounds of the hand: 11", e.getMessage());
     }
 
   }

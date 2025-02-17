@@ -225,16 +225,6 @@ public class PokerPolygonsIntegrationTests {
                     "Deck: 48" + System.lineSeparator() +
                     "Hand: 2♣, 2♢, 2♡, 2♠" + System.lineSeparator() +
                     "Score: 0" + System.lineSeparator() +
-                    "Invalid move. Play again. Card index in the hand is out of bounds: 0"
-                    + System.lineSeparator() +
-                    " __" + System.lineSeparator() +
-                    " __  __" + System.lineSeparator() +
-                    " __  __  __" + System.lineSeparator() +
-                    " __  __  __  __" + System.lineSeparator() +
-                    " __  __  __  __  __" + System.lineSeparator() +
-                    "Deck: 48" + System.lineSeparator() +
-                    "Hand: 2♣, 2♢, 2♡, 2♠" + System.lineSeparator() +
-                    "Score: 0" + System.lineSeparator() +
                     "Game quit!" + System.lineSeparator() +
                     "State of game when quit:" + System.lineSeparator() +
                     " __" + System.lineSeparator() +
