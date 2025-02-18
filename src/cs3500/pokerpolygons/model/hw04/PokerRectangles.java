@@ -4,7 +4,6 @@ import java.util.Random;
 
 import cs3500.pokerpolygons.model.hw02.EmptyCard;
 import cs3500.pokerpolygons.model.hw02.PlayingCard;
-//TODO: Test this class THOROUGHLY
 
 /**
  * To represent a PokerSquares type game in the shape of a rectangle. The valid

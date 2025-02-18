@@ -6,8 +6,6 @@ import java.util.List;
 import cs3500.pokerpolygons.model.hw02.PlayingCard;
 import cs3500.pokerpolygons.model.hw02.PokerPolygons;
 
-
-//TODO: Thoroughly test this class.
 /**
  * Scoring logic for a PokerRectangles game.
  * Valid hands include valid rows and valid columns.

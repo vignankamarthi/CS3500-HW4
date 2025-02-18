@@ -574,9 +574,12 @@ public class PokerPolygonsIntegrationTests {
     try {
       PokerPolygons<PlayingCard> model = new PokerTriangles(5);
       PokerPolygonsTextualView view = new PokerTrianglesTextualView(model);
-      new PokerPolygonsTextualController(null, new StringBuilder()).playGame(model, view, model.getNewDeck(), false, 5);
+      new PokerPolygonsTextualController(null,
+              new StringBuilder()).playGame(model, view,
+              model.getNewDeck(), false, 5);
     } catch (IllegalArgumentException e) {
-      assertEquals("Readable (input) and Appendable (output) cannot be null", e.getMessage());
+      assertEquals("Readable (input) and Appendable (output) cannot be null",
+              e.getMessage());
     }
   }
 
@@ -589,9 +592,11 @@ public class PokerPolygonsIntegrationTests {
     try {
       PokerPolygons<PlayingCard> model = new PokerTriangles(5);
       PokerPolygonsTextualView view = new PokerTrianglesTextualView(model);
-      new PokerPolygonsTextualController(new java.io.StringReader(""), null).playGame(model, view, model.getNewDeck(), false, 5);
+      new PokerPolygonsTextualController(new java.io.StringReader(""),
+              null).playGame(model, view, model.getNewDeck(), false, 5);
     } catch (IllegalArgumentException e) {
-      assertEquals("Readable (input) and Appendable (output) cannot be null", e.getMessage());
+      assertEquals("Readable (input) and Appendable (output) cannot be null",
+              e.getMessage());
     }
   }
 
@@ -604,9 +609,11 @@ public class PokerPolygonsIntegrationTests {
     try {
       PokerPolygons<PlayingCard> model = new PokerTriangles(5);
       PokerPolygonsTextualView view = new PokerTrianglesTextualView(model);
-      new PokerPolygonsTextualController(null, null).playGame(model, view, model.getNewDeck(), false, 5);
+      new PokerPolygonsTextualController(null, null).playGame(model, view,
+              model.getNewDeck(), false, 5);
     } catch (IllegalArgumentException e) {
-      assertEquals("Readable (input) and Appendable (output) cannot be null", e.getMessage());
+      assertEquals("Readable (input) and Appendable (output) cannot be null",
+              e.getMessage());
     }
   }
 
@@ -616,9 +623,13 @@ public class PokerPolygonsIntegrationTests {
   @Test
   public void testPlayGameThrowsExceptionForNullModel() {
     try {
-      PokerPolygonsTextualController controller = new PokerPolygonsTextualController(new java.io.StringReader(""), new StringBuilder());
-      PokerPolygonsTextualView view = new PokerTrianglesTextualView(new PokerTriangles(5));
-      controller.playGame(null, view, new PokerTriangles(5).getNewDeck(), false, 5);
+      PokerPolygonsTextualController controller =
+              new PokerPolygonsTextualController(new java.io.StringReader(""),
+                      new StringBuilder());
+      PokerPolygonsTextualView view =
+              new PokerTrianglesTextualView(new PokerTriangles(5));
+      controller.playGame(null, view,
+              new PokerTriangles(5).getNewDeck(), false, 5);
     } catch (IllegalArgumentException e) {
       assertEquals("Model or view cannot be null.", e.getMessage());
     }
@@ -644,7 +655,8 @@ public class PokerPolygonsIntegrationTests {
 
       PokerPolygons<PlayingCard> model = new PokerTriangles(5);
       PokerPolygonsTextualView view = new PokerTrianglesTextualView(model);
-      PokerPolygonsTextualController controller = new PokerPolygonsTextualController(failingReader, new StringBuilder());
+      PokerPolygonsTextualController controller = new PokerPolygonsTextualController(failingReader,
+              new StringBuilder());
       List<PlayingCard> deck = model.getNewDeck();
 
       controller.playGame(model, view, deck, false, 5);
@@ -654,7 +666,8 @@ public class PokerPolygonsIntegrationTests {
   }
 
   /**
-   * Tests that playGame() throws an IllegalStateException when output cannot be appended to the Appendable while the game is in progress.
+   * Tests that playGame() throws an IllegalStateException when output cannot be appended to the
+   * Appendable while the game is in progress.
    */
   @Test
   public void testPlayGameThrowsExceptionWhenAppendableFails() {
@@ -678,7 +691,8 @@ public class PokerPolygonsIntegrationTests {
 
       PokerPolygons<PlayingCard> model = new PokerTriangles(5);
       PokerPolygonsTextualView view = new PokerTrianglesTextualView(model);
-      PokerPolygonsTextualController controller = new PokerPolygonsTextualController(new StringReader("q"), failingAppendable);
+      PokerPolygonsTextualController controller = new PokerPolygonsTextualController(new
+              StringReader("q"), failingAppendable);
       List<PlayingCard> deck = model.getNewDeck();
 
       controller.playGame(model, view, deck, false, 5);

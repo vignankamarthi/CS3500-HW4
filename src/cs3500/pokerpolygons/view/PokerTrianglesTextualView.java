@@ -8,13 +8,14 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * A String type view of a PokerTriangles game, ensuring empty spaces use EmptyCard.
+ * A String type view of a PokerTriangles game to view the implementation details in a String
+ * format.
  */
 public class PokerTrianglesTextualView<C extends Card> implements PokerPolygonsTextualView {
   private final PokerPolygons<C> model;
 
   /**
-   * Constructs a PokerTrianglesTextualView with the given instance.
+   * Constructs a PokerTrianglesTextualView with the given model.
    *
    * @throws IllegalArgumentException if the model is null
    */

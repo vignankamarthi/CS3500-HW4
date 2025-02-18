@@ -12,7 +12,6 @@ import cs3500.pokerpolygons.model.hw02.PokerPolygons;
  * Scoring logic for a PokerTriangles game.
  * Valid hands include valid rows, valid columns, and the main diagonal.
  */
-//TODO: Thoroughly test this class.
 public class PokerTrianglesScoring extends PokerBasicScoring {
 
   /**
