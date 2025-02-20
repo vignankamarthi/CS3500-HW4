@@ -1,5 +1,6 @@
-package cs3500.pokerpolygons.controller;
+package cs3500.pokerpolygons;
 
+import cs3500.pokerpolygons.controller.PokerPolygonsTextualController;
 import cs3500.pokerpolygons.model.hw02.PlayingCard;
 import cs3500.pokerpolygons.model.hw02.PokerPolygons;
 import cs3500.pokerpolygons.model.hw02.PokerPolygonsSimple;
@@ -22,7 +23,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * Unit tests for the PokerPolygonsTextualController class using the mocks (view and model).
  */
-public class PokerPolygonsTextualControllerTest {
+public class PokerPolygonsControllerUnitMockTests {
 
   /**
    * Tests that the controller quits properly when the input is "q" (lowercase).
@@ -452,7 +453,7 @@ public class PokerPolygonsTextualControllerTest {
       PokerPolygonsTextualView view = new PokerTrianglesTextualViewSimple<>(model);
       controller.playGame(model, view, new ArrayList<>(), false, -1);
     } catch (IllegalStateException e) {
-      assertEquals("Failed to read input.", e.getMessage());
+      assertEquals("Failed to read input due to scanner state.", e.getMessage());
     }
   }
 
@@ -480,7 +481,7 @@ public class PokerPolygonsTextualControllerTest {
       PokerPolygonsTextualView view = new PokerTrianglesTextualViewSimple<>(model);
       controller.playGame(model, view, new ArrayList<>(), false, 5);
     } catch (IllegalStateException e) {
-      assertEquals("Failed to read input.", e.getMessage());
+      assertEquals("Failed to read input due to scanner state.", e.getMessage());
     }
   }
 

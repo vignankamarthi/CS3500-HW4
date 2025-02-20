@@ -76,9 +76,8 @@ public class PokerTriangles extends PokerBasicPolygons {
    */
   @Override
   public int getScore()  {
-    if (!isGameStarted) {
-      throw new IllegalStateException("Game has not started.");
-    }
+    gameHasNotStartedException();
+
     return new PokerTrianglesScoring().calculateScore(this);
   }
 
@@ -124,9 +123,8 @@ public class PokerTriangles extends PokerBasicPolygons {
    */
   @Override
   public void placeCardInPosition(int cardIdx, int row, int col) {
-    if (!isGameStarted) {
-      throw new IllegalStateException("Game has not started.");
-    }
+    gameHasNotStartedException();
+
     if (cardIdx < 0 || cardIdx >= hand.size()) {
       throw new IllegalArgumentException("Card index in the hand is out of bounds: "
               + (cardIdx + 1));
@@ -157,9 +155,8 @@ public class PokerTriangles extends PokerBasicPolygons {
    */
   @Override
   public PlayingCard getCardAt(int row, int col) {
-    if (!isGameStarted) {
-      throw new IllegalStateException("Game has not started.");
-    }
+    gameHasNotStartedException();
+
     if (row < 0 || row >= sideLength || col < 0 || col > row) {
       throw new IllegalArgumentException("Row or column out of bounds: " + row + ", " + col);
     }
@@ -179,9 +176,8 @@ public class PokerTriangles extends PokerBasicPolygons {
    */
   @Override
   public boolean isGameOver() {
-    if (!isGameStarted) {
-      throw new IllegalStateException("Game has not started.");
-    }
+    gameHasNotStartedException();
+
     for (int row = 0; row < sideLength; row++) {
       for (int col = 0; col <= row; col++) {
         if (gameBoard[row][col].equals(EmptyCard.getEmptyCard())) {

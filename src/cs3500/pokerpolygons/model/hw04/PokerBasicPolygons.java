@@ -53,9 +53,8 @@ public abstract class PokerBasicPolygons implements PokerPolygons<PlayingCard> {
    */
   @Override
   public List<PlayingCard> getHand() {
-    if (!isGameStarted) {
-      throw new IllegalStateException("Game has not started.");
-    }
+    gameHasNotStartedException();
+
     return new ArrayList<>(hand);
   }
 
@@ -67,9 +66,8 @@ public abstract class PokerBasicPolygons implements PokerPolygons<PlayingCard> {
    */
   @Override
   public int getRemainingDeckSize() {
-    if (!isGameStarted) {
-      throw new IllegalStateException("Game has not started.");
-    }
+    gameHasNotStartedException();
+
     return deck.size();
   }
 
@@ -82,9 +80,8 @@ public abstract class PokerBasicPolygons implements PokerPolygons<PlayingCard> {
    */
   @Override
   public void discardCard(int cardIdx) {
-    if (!isGameStarted) {
-      throw new IllegalStateException("Game has not started.");
-    }
+    gameHasNotStartedException();
+
     if (deck.size() + hand.size() - 1 < getPlayableSpots()) {
       throw new IllegalStateException("Not enough cards left to discard and continue playing.");
     }
@@ -220,4 +217,16 @@ public abstract class PokerBasicPolygons implements PokerPolygons<PlayingCard> {
    */
   @Override
   public abstract int getHeight();
+
+  /**
+   * To handle the exception if the game has started.
+   *
+   * @throws IllegalStateException
+   */
+  protected IllegalStateException gameHasNotStartedException() {
+    if (!isGameStarted) {
+      throw new IllegalStateException("Game has not started.");
+    }
+    return null;
+  }
 }

@@ -2,6 +2,7 @@ package cs3500.pokerpolygons.controller;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 import cs3500.pokerpolygons.model.hw02.Card;
 import cs3500.pokerpolygons.model.hw02.PokerPolygons;
@@ -45,17 +46,10 @@ public class PokerPolygonsTextualController implements PokerPolygonsController {
   @Override
   public <C extends Card> void playGame(PokerPolygons<C> model, PokerPolygonsTextualView view,
                                         List<C> deck, boolean shuffle, int handSize) {
-    if (model == null || view == null) {
-      throw new IllegalArgumentException("Model or view cannot be null.");
-    }
+    nullModelOrViewException(model, view);
     Scanner scanner = new Scanner(this.input);
-    try {
-      model.startGame(deck, shuffle, handSize);
-    } catch (Exception e) {
-      throw new IllegalStateException("Failed to start game.", e);
-    }
-    safeAppend(view.toString() + System.lineSeparator());
-    safeAppend("Score: " + model.getScore() + System.lineSeparator());
+    initializeGameExceptionPokerPolygons(model, deck, shuffle, handSize);
+    appendScore(model, view);
     try {
       while (scanner.hasNext()) {
         String command = scanner.next();
@@ -93,9 +87,60 @@ public class PokerPolygonsTextualController implements PokerPolygonsController {
         }
       }
       checkInputAvailable(scanner);
-    } catch (Exception e) {
-      throw new IllegalStateException("Failed to read input.", e);
+    } catch (NoSuchElementException e) {
+      throw new IllegalStateException("Failed to read input due to no available elements.", e);
+    } catch (IllegalStateException e) {
+      throw new IllegalStateException("Failed to read input due to scanner state.", e);
     }
+  }
+
+  /**
+   * To handle a null model or view in the playGame() method.
+   *
+   * @throws IllegalArgumentException
+   * @param model is the model of the game.
+   * @param view is the view output of the game
+   * @param <C> the type of the Card used in the model
+   * @return null
+   *
+   */
+  private <C extends Card> IllegalArgumentException nullModelOrViewException
+  (PokerPolygons<C> model, PokerPolygonsTextualView view) {
+    if (model == null || view == null) {
+      throw new IllegalArgumentException("Model or view cannot be null.");
+    }
+    return null;
+  }
+
+  /**
+   * To handle adding the score appending the score constantly throughout the game.
+   *
+   * @param model is the model of the game.
+   * @param view is the view output of the game
+   * @param <C> the type of the Card used in the model
+   */
+  private <C extends Card> void appendScore(PokerPolygons<C> model, PokerPolygonsTextualView view) {
+    safeAppend(view.toString() + System.lineSeparator());
+    safeAppend("Score: " + model.getScore() + System.lineSeparator());
+  }
+
+  /**
+   * To catch proper exceptions while starting the game.
+   * @param model is the model of the game
+   * @param deck is the deck of the game
+   * @param shuffle dictates whether to shuffle or not
+   * @param handSize is the handSize of the game
+   * @param <C> extends the card
+   * @return null
+   */
+  private <C extends Card> IllegalStateException initializeGameExceptionPokerPolygons
+  (PokerPolygons<C> model,List<C> deck, boolean shuffle, int handSize) {
+    try {
+      model.startGame(deck, shuffle, handSize);
+    } catch (Exception e) {
+      throw new IllegalStateException("Failed to start game.", e);
+    }
+    return null;
   }
 
   /**
@@ -131,8 +176,6 @@ public class PokerPolygonsTextualController implements PokerPolygonsController {
         }
         return num;
       } catch (NumberFormatException e) {
-        // Silently ignore invalid numeric input.
-        continue;
       }
     }
     return null;

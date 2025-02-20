@@ -661,7 +661,7 @@ public class PokerPolygonsIntegrationTests {
 
       controller.playGame(model, view, deck, false, 5);
     } catch (IllegalStateException e) {
-      assertEquals("Failed to read input.", e.getMessage());
+      assertEquals("Failed to read input due to scanner state.", e.getMessage());
     }
   }
 
