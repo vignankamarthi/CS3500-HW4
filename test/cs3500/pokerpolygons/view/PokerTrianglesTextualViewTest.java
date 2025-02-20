@@ -28,8 +28,6 @@ public class PokerTrianglesTextualViewTest {
 
   @Before
   public void setUp() {
-    Random seededRandom = new Random(8); // Ensure deterministic deck order
-
     // Create an empty game (side length 5) using a seeded deck
     PokerTriangles emptyGame = new PokerTriangles(5, new Random(8));
     emptyGame.startGame(getSampleDeck(), true, 4);

@@ -1,8 +1,8 @@
 package cs3500.pokerpolygons.view;
 
-import cs3500.pokerpolygons.model.hw02.EmptyCard;
-import cs3500.pokerpolygons.model.hw02.PokerPolygons;
 import cs3500.pokerpolygons.model.hw02.Card;
+import cs3500.pokerpolygons.model.hw02.PokerPolygons;
+import cs3500.pokerpolygons.model.hw02.EmptyCard;
 
 import java.io.IOException;
 import java.util.List;
@@ -15,9 +15,8 @@ public class PokerRectanglesTextualView<C extends Card> implements PokerPolygons
   private final PokerPolygons<C> model;
 
   /**
-   * Constructs a PokerRectanglesTextualView with the given game model.
+   * Constructs a PokerRectanglesTextualView with the given model.
    *
-   * @param model the PokerPolygons game model
    * @throws IllegalArgumentException if the model is null
    */
   public PokerRectanglesTextualView(PokerPolygons<C> model) {
@@ -28,9 +27,9 @@ public class PokerRectanglesTextualView<C extends Card> implements PokerPolygons
   }
 
   /**
-   * Generates the string representation of the rectangular board, along with deck size and hand.
+   * Generates the string representation of the game.
    *
-   * @return a formatted string representing the game state
+   * @return the formatted board, deck size, and hand
    */
   @Override
   public String toString() {
@@ -42,64 +41,84 @@ public class PokerRectanglesTextualView<C extends Card> implements PokerPolygons
     for (int row = 0; row < height; row++) {
       for (int col = 0; col < width; col++) {
         C card = model.getCardAt(row, col);
-        String cardStr = (card == null || card.equals(EmptyCard.getEmptyCard()))
-                ? "__" : formatCard(card);
-        sb.append(cardStr);
-        if (col < width - 1) {
-          sb.append(" ");
+        String cardStr = (card == null || card.equals(EmptyCard.getEmptyCard())) ? "__" : formatCard(card);
+
+        // Ensure first column always has a leading space
+        if (col == 0) {
+          if (cardStr.length() == 3) {
+            sb.append(cardStr);
+          }
+          else if (cardStr.length() == 2) {
+            sb.append(" ").append(cardStr);
+          }
+          else {
+            sb.append(" ").append(cardStr);
+          }
+        } else if (cardStr.length() == 3) {  // If it's a "10" card, only one space before
+          sb.append(" ").append(cardStr);
+        } else {
+          sb.append("  ").append(cardStr); // Default: two spaces before every other column
         }
       }
       sb.append("\n");
     }
 
-    // Append deck size and hand info.
+    // Append deck size
     sb.append("Deck: ").append(model.getRemainingDeckSize()).append("\n");
+
+    // Append formatted hand
     sb.append("Hand: ").append(formatHand(model.getHand()));
 
     return sb.toString();
   }
 
   /**
-   * Formats the player's hand as a comma-separated list.
-   *
-   * @param hand the list of cards in hand
-   * @return the formatted hand string
+   * Formats the player's hand with proper spacing.
    */
   private String formatHand(List<C> hand) {
     StringBuilder sb = new StringBuilder();
     boolean first = true;
+
     for (C card : hand) {
       if (!first) {
         sb.append(", ");
       }
-      sb.append(formatCard(card));
+
+      String formattedCard = formatCard(card);
+
+      // Ensure 10-based cards align properly
+      if (formattedCard.length() == 3) {
+        sb.append(formattedCard);
+      } else {
+        sb.append(formattedCard);
+      }
+
       first = false;
     }
     return sb.toString();
   }
 
   /**
-   * Formats a card for display.
-   *
-   * @param card the card to format
-   * @return the string representation of the card
+   * Formats a card for display, ensuring proper alignment for "10" and single-character cards.
    */
   private String formatCard(C card) {
-    return card.toString();
+    String cardStr = card.toString();
+    return cardStr;
   }
 
   /**
-   * Appends the current textual view to the given appendable.
+   * To append the current textual output to the given appendable.
    *
-   * @param append the Appendable to render the game state into
+   * @param append is the argument that will get the textual view appended on to.
    * @throws IllegalArgumentException if append is null
-   * @throws IOException if an I/O error occurs
+   * @throws IOException              if the rendering fails for some reason
    */
   @Override
   public void render(Appendable append) throws IOException {
     if (append == null) {
       throw new IllegalArgumentException("Append cannot be null.");
     }
+
     append.append(this.toString());
   }
 }
