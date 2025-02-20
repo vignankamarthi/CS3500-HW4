@@ -13,13 +13,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 import cs3500.pokerpolygons.model.hw02.PlayingCard;
-import cs3500.pokerpolygons.model.hw02.PokerPolygons;
 import cs3500.pokerpolygons.model.hw02.Ranks;
 import cs3500.pokerpolygons.model.hw02.StandardPlayingCard;
 import cs3500.pokerpolygons.model.hw02.Suits;
 import cs3500.pokerpolygons.model.hw04.PokerRectangles;
 
-//TODO: Fix this test class.
 /**
  * To test the String rendering of the PokerRectanglesView class.
  */
