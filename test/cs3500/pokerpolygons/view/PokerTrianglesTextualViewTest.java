@@ -13,6 +13,7 @@ import cs3500.pokerpolygons.model.hw02.PokerTriangles;
 import cs3500.pokerpolygons.model.hw02.Ranks;
 import cs3500.pokerpolygons.model.hw02.StandardPlayingCard;
 import cs3500.pokerpolygons.model.hw02.Suits;
+import cs3500.pokerpolygons.model.hw04.LoosePokerTriangles;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -20,11 +21,16 @@ import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.fail;
 
 /**
- * To test the String rendering of the PokerTrianglesView class.
+ * To test the String rendering of the PokerTrianglesView class
+ * and the newly added LooserPokerTriangles class, which should be equivalent in view
+ * as just the scoring changed.
  */
 public class PokerTrianglesTextualViewTest {
   private PokerTrianglesTextualView<PlayingCard> emptyView;
   private PokerTrianglesTextualView<PlayingCard> populatedView;
+
+  private PokerTrianglesTextualView<PlayingCard> looseEmptyView;
+  private PokerTrianglesTextualView<PlayingCard> loosePopulatedView;
 
   @Before
   public void setUp() {
@@ -37,6 +43,17 @@ public class PokerTrianglesTextualViewTest {
     PokerTriangles populatedGame = new PokerTriangles(7, new Random(8));
     populatedGame.startGame(getSampleDeck(), false, 4);
     populatedView = new PokerTrianglesTextualView<>(populatedGame);
+
+
+    // Create an empty loose game (side length 5) using a seeded deck
+    LoosePokerTriangles looseEmptyGame = new LoosePokerTriangles(5, new Random(8));
+    looseEmptyGame.startGame(getSampleDeck(), true, 4);
+    looseEmptyView = new PokerTrianglesTextualView<>(looseEmptyGame);
+
+    // Create a populated loose game (side length 7) using a seeded deck
+    LoosePokerTriangles loosePopulatedGame = new LoosePokerTriangles(7, new Random(8));
+    loosePopulatedGame.startGame(getSampleDeck(), false, 4);
+    loosePopulatedView = new PokerTrianglesTextualView<>(loosePopulatedGame);
   }
 
   /**
@@ -325,4 +342,228 @@ public class PokerTrianglesTextualViewTest {
     }
   }
 
+
+
+  /**
+   * Testing for an empty board with a random seed.
+   */
+  @Test
+  public void testLooseEmptyBoardToString() {
+    String expected =
+            " __\n" +
+                    " __  __\n" +
+                    " __  __  __\n" +
+                    " __  __  __  __\n" +
+                    " __  __  __  __  __\n" +
+                    "Deck: 48\n" +
+                    "Hand: J♢, 8♢, 3♠, 2♣";
+    assertEquals(expected, looseEmptyView.toString());
+  }
+
+  /**
+   * Testing with a random board without randomizing.
+   */
+  @Test
+  public void testLoosePopulatedBoardToString() {
+    String expected =
+            " __\n" +
+                    " __  __\n" +
+                    " __  __  __\n" +
+                    " __  __  __  __\n" +
+                    " __  __  __  __  __\n" +
+                    " __  __  __  __  __  __\n" +
+                    " __  __  __  __  __  __  __\n" +
+                    "Deck: 48\n" +
+                    "Hand: 2♣, 2♢, 2♡, 2♠";
+    assertEquals(expected, loosePopulatedView.toString());
+  }
+
+  /**
+   * Testing rendering on the diagonal.
+   */
+  @Test
+  public void testLooseDetectHandsOnDiagonal() {
+    LoosePokerTriangles game = new LoosePokerTriangles(5, new Random(8));
+    game.startGame(getSampleDeck(), true, 5);
+
+    // Place cards diagonally
+    game.placeCardInPosition(0, 0, 0); // First row, first column
+    game.placeCardInPosition(1, 1, 1);
+    game.placeCardInPosition(2, 2, 2);
+    game.placeCardInPosition(3, 3, 3);
+    game.placeCardInPosition(4, 4, 4);
+
+    PokerTrianglesTextualView<PlayingCard> view = new PokerTrianglesTextualView<>(game);
+
+    String expected =
+            " J♢\n" +
+                    " __  3♠\n" +
+                    " __  __  Q♡\n" +
+                    " __  __  __  5♣\n" +
+                    " __  __  __  __  6♢\n" +
+                    "Deck: 42\n" +
+                    "Hand: 8♢, 2♣, 4♢, 5♢, 6♣";
+    assertEquals(expected, view.toString());
+  }
+
+  /**
+   * Testing formatting with 10 in the hand.
+   */
+  @Test
+  public void testLooseEmptyBoardHandFormattingWithTen() {
+    LoosePokerTriangles game = new LoosePokerTriangles(5, new Random(8));
+
+    // Construct a deck where we ensure a 10 is in the hand
+    List<PlayingCard> deck = new ArrayList<>();
+    deck.add(new StandardPlayingCard(Ranks.TEN, Suits.SPADES));
+    deck.add(new StandardPlayingCard(Ranks.ACE, Suits.CLUBS));
+    deck.add(new StandardPlayingCard(Ranks.QUEEN, Suits.HEARTS));
+    deck.add(new StandardPlayingCard(Ranks.THREE, Suits.DIAMONDS));
+    deck.add(new StandardPlayingCard(Ranks.SEVEN, Suits.CLUBS));
+
+    // Fill the rest of the deck with arbitrary cards
+    for (Ranks rank : Ranks.values()) {
+      for (Suits suit : Suits.values()) {
+        if (deck.size() < 52) {
+          deck.add(new StandardPlayingCard(rank, suit));
+        }
+      }
+    }
+
+    // Start the game with the controlled deck
+    game.startGame(deck, true, 5);
+
+    PokerTrianglesTextualView<PlayingCard> view = new PokerTrianglesTextualView<>(game);
+
+    String expected =
+            " __\n" +
+                    " __  __\n" +
+                    " __  __  __\n" +
+                    " __  __  __  __\n" +
+                    " __  __  __  __  __\n" +
+                    "Deck: 47\n" +
+                    "Hand: 10♣, 7♣, 2♡, 10♠, J♢";
+    assertEquals(expected, view.toString());
+  }
+
+  /**
+   * Testing the formatting behavior with tens all over the place.
+   */
+  @Test
+  public void testLooseBoardRenderingWithTensInFirstColumnAndMiddle() {
+    // Ensure the 10s are at the front of the deck
+    List<PlayingCard> deck = getSampleDeckWithLeadingTens();
+
+    LoosePokerTriangles game = new LoosePokerTriangles(5, new Random(8));
+    game.startGame(deck, false, 5); // No shuffle to maintain order
+
+    // Place 10s in the first column (edge)
+    game.placeCardInPosition(0, 0, 0); // First row, first column (10♠)
+    game.placeCardInPosition(1, 1, 0); // Second row, first column (10♦)
+    game.placeCardInPosition(2, 2, 0); // Third row, first column (10♣)
+    game.placeCardInPosition(3, 3, 0); // Fourth row, first column (10♥)
+    game.placeCardInPosition(4, 4, 0); // Fifth row, first column (10♠)
+
+    // Place 10s in the middle
+    game.placeCardInPosition(0, 2, 1); // Middle of row 3 (10♦)
+    game.placeCardInPosition(0, 3, 2); // Middle of row 4 (10♣)
+    game.placeCardInPosition(0, 4, 3); // Middle of row 5 (10♥)
+
+    PokerTrianglesTextualView<PlayingCard> correctView = new PokerTrianglesTextualView<>(game);
+
+    String expected =
+            "10♠\n" +
+                    "10♣  __\n" +
+                    " 2♣ 10♢  __\n" +
+                    " 2♡  __ 10♡  __\n" +
+                    " 3♣  __  __  2♢  __\n" +
+                    "Deck: 39\n" +
+                    "Hand: 2♠, 3♢, 3♡, 3♠, 4♣";
+    assertEquals(expected, correctView.toString());
+  }
+
+  /**
+   * Test that a larger board properly renders when filled.
+   */
+  @Test
+  public void testLooseFilledLargeBoardView() {
+    LoosePokerTriangles largeGame = new LoosePokerTriangles(10, new Random(8));
+    largeGame.startGame(getLargeDeck(), false, 10);
+
+    // Fill the board completely
+    for (int row = 0; row < 10; row++) {
+      for (int col = 0; col <= row; col++) {
+        largeGame.placeCardInPosition(0, row, col);
+      }
+    }
+
+    PokerTrianglesTextualView<PlayingCard> largeView = new PokerTrianglesTextualView<>(largeGame);
+    String boardString = largeView.toString();
+
+    // Check that there are no "__" placeholders left (meaning the board is filled)
+    assertFalse(boardString.contains("__"));
+  }
+
+  /**
+   * Tests that render correctly appends the game state to an empty Appendable.
+   */
+  @Test
+  public void testLooseRenderAppendsToEmptyAppendable() {
+    LoosePokerTriangles game = new LoosePokerTriangles(5, new Random(8));
+    game.startGame(getSampleDeck(), true, 4);
+    PokerTrianglesTextualView<PlayingCard> view = new PokerTrianglesTextualView<>(game);
+
+    StringBuilder output = new StringBuilder();
+    try {
+      view.render(output);
+    } catch (IOException e) {
+      throw new AssertionError("IOException should not have been thrown.", e);
+    }
+
+    assertEquals(game.toString(), output.toString());
+  }
+
+  /**
+   * Tests that render correctly appends the game state to an Appendable.
+   */
+  @Test
+  public void testLooseRenderAppendsToAppendable() {
+    LoosePokerTriangles game = new LoosePokerTriangles(5, new Random(8));
+    game.startGame(getSampleDeck(), true, 4);
+    PokerTrianglesTextualView<PlayingCard> view = new PokerTrianglesTextualView<>(game);
+
+    StringBuilder output = new StringBuilder("Game");
+    try {
+      view.render(output);
+    } catch (IOException e) {
+      throw new AssertionError("IOException should not have been thrown.", e);
+    }
+
+    assertEquals("Game" + game.toString(), output.toString());
+  }
+
+  /**
+   * Tests that render throws an IllegalArgumentException when given a null Appendable.
+   */
+  @Test
+  public void testLooseRenderThrowsExceptionForNullAppendable() {
+    LoosePokerTriangles game = new LoosePokerTriangles(5, new Random(8));
+    game.startGame(getSampleDeck(), true, 4);
+    PokerTrianglesTextualView<PlayingCard> view = new PokerTrianglesTextualView<>(game);
+
+    assertThrows(IllegalArgumentException.class, () -> view.render(null));
+  }
+
+  /**
+   * Tests that constructing a PokerTrianglesTextualView with a null model
+   * throws an IllegalArgumentException.
+   */
+  @Test
+  public void testLooseConstructorThrowsExceptionForNullModel() {
+    try {
+      new PokerTrianglesTextualView<PlayingCard>(null);
+    } catch (IllegalArgumentException e) {
+      assertEquals("Model cannot be null.", e.getMessage());
+    }
+  }
 }

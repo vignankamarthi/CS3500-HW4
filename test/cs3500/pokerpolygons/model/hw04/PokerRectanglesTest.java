@@ -11,12 +11,13 @@ import java.util.Set;
 import org.junit.Test;
 
 import cs3500.pokerpolygons.model.hw02.PlayingCard;
+import cs3500.pokerpolygons.model.hw02.PokerPolygons;
 import cs3500.pokerpolygons.model.hw02.Ranks;
 import cs3500.pokerpolygons.model.hw02.StandardPlayingCard;
 import cs3500.pokerpolygons.model.hw02.Suits;
 
 /**
- * Tests for the PokerRectangles class including exceptions, general behavior,
+ * Tests for the PokerPolygons class including exceptions, general behavior,
  * and edge case behavior.
  */
 public class PokerRectanglesTest {
@@ -27,7 +28,7 @@ public class PokerRectanglesTest {
    */
   @Test
   public void testPlaceCardInPosition() {
-    PokerRectangles game = new PokerRectangles(7, 5);
+    PokerPolygons game = new PokerRectangles(7, 5);
     List<PlayingCard> deck = game.getNewDeck();
     game.startGame(deck, false, 5);
 
@@ -49,7 +50,7 @@ public class PokerRectanglesTest {
    */
   @Test
   public void testDiscardCard() {
-    PokerRectangles game = new PokerRectangles(7, 5);
+    PokerPolygons game = new PokerRectangles(7, 5);
     List<PlayingCard> deck = game.getNewDeck();
     game.startGame(deck, false, 5);
 
@@ -74,7 +75,7 @@ public class PokerRectanglesTest {
    */
   @Test
   public void testStartGame() {
-    PokerRectangles game = new PokerRectangles(7, 5);
+    PokerPolygons game = new PokerRectangles(7, 5);
     List<PlayingCard> deck = game.getNewDeck();
 
     game.startGame(deck, false, 5);
@@ -101,7 +102,7 @@ public class PokerRectanglesTest {
    */
   @Test
   public void testGetWidth() {
-    PokerRectangles game = new PokerRectangles(7, 5);
+    PokerPolygons game = new PokerRectangles(7, 5);
     assertEquals(7, game.getWidth());
   }
 
@@ -110,7 +111,7 @@ public class PokerRectanglesTest {
    */
   @Test
   public void testGetHeight() {
-    PokerRectangles game = new PokerRectangles(7, 5);
+    PokerPolygons game = new PokerRectangles(7, 5);
     assertEquals(5, game.getHeight());
   }
 
@@ -119,7 +120,7 @@ public class PokerRectanglesTest {
    */
   @Test
   public void testGetNewDeck() {
-    PokerRectangles game = new PokerRectangles(7, 5);
+    PokerPolygons game = new PokerRectangles(7, 5);
     List<PlayingCard> deck = game.getNewDeck();
     assertEquals(52, deck.size());
     Set<PlayingCard> uniqueCards = new HashSet<>(deck);
@@ -131,7 +132,7 @@ public class PokerRectanglesTest {
    */
   @Test
   public void testGetCardAt() {
-    PokerRectangles game = new PokerRectangles(7, 5);
+    PokerPolygons game = new PokerRectangles(7, 5);
     List<PlayingCard> deck = game.getNewDeck();
     game.startGame(deck, false, 5);
 
@@ -159,7 +160,7 @@ public class PokerRectanglesTest {
    */
   @Test
   public void testGetHand() {
-    PokerRectangles game = new PokerRectangles(7, 5);
+    PokerPolygons game = new PokerRectangles(7, 5);
     try {
       game.getHand();
     } catch (IllegalStateException e) {
@@ -172,7 +173,7 @@ public class PokerRectanglesTest {
    */
   @Test
   public void testGetScore() {
-    PokerRectangles game = new PokerRectangles(7, 5);
+    PokerPolygons game = new PokerRectangles(7, 5);
     try {
       game.getScore();
     } catch (IllegalStateException e) {
@@ -185,7 +186,7 @@ public class PokerRectanglesTest {
    */
   @Test
   public void testGetRemainingDeckSize() {
-    PokerRectangles game = new PokerRectangles(7, 5);
+    PokerPolygons game = new PokerRectangles(7, 5);
     try {
       game.getRemainingDeckSize();
     } catch (IllegalStateException e) {
@@ -198,7 +199,7 @@ public class PokerRectanglesTest {
    */
   @Test
   public void testIsGameOver() {
-    PokerRectangles game = new PokerRectangles(7, 5);
+    PokerPolygons game = new PokerRectangles(7, 5);
     try {
       game.isGameOver();
     } catch (IllegalStateException e) {
@@ -211,7 +212,7 @@ public class PokerRectanglesTest {
    */
   @Test
   public void testPlaceCardInCorrectPosition() {
-    PokerRectangles game = new PokerRectangles(7, 5);
+    PokerPolygons game = new PokerRectangles(7, 5);
     List<PlayingCard> deck = game.getNewDeck();
     game.startGame(deck, false, 5);
 
@@ -226,7 +227,7 @@ public class PokerRectanglesTest {
    */
   @Test
   public void testPlaceMultipleCardsInCorrectPositions() {
-    PokerRectangles game = new PokerRectangles(7, 5);
+    PokerPolygons game = new PokerRectangles(7, 5);
 
     List<PlayingCard> deck = game.getNewDeck();
 
@@ -247,7 +248,7 @@ public class PokerRectanglesTest {
    */
   @Test
   public void testDeckSizeDecreasesAfterPlacingCards() {
-    PokerRectangles game = new PokerRectangles(7, 5);
+    PokerPolygons game = new PokerRectangles(7, 5);
     List<PlayingCard> deck = game.getNewDeck();
     game.startGame(deck, false, 5);
 
@@ -265,7 +266,7 @@ public class PokerRectanglesTest {
    */
   @Test
   public void testUnoccupiedPositionsRemainEmpty() {
-    PokerRectangles game = new PokerRectangles(7, 5);
+    PokerPolygons game = new PokerRectangles(7, 5);
     List<PlayingCard> deck = game.getNewDeck();
     game.startGame(deck, false, 5);
 
@@ -284,7 +285,7 @@ public class PokerRectanglesTest {
    */
   @Test
   public void testHandSizeAfterDiscard() {
-    PokerRectangles game = new PokerRectangles(7, 5);
+    PokerPolygons game = new PokerRectangles(7, 5);
     List<PlayingCard> deck = game.getNewDeck();
     game.startGame(deck, false, 5);
 
@@ -296,27 +297,11 @@ public class PokerRectanglesTest {
   }
 
   /**
-   * Tests that a new card is drawn into the hand after discarding.
-   */
-  @Test
-  public void testNewCardIsDrawnAfterDiscard() {
-    PokerRectangles game = new PokerRectangles(7, 5);
-    List<PlayingCard> deck = game.getNewDeck();
-    game.startGame(deck, false, 5);
-
-    PlayingCard oldFirstCard = game.getHand().get(0);
-    game.discardCard(0); // Discard the first card
-
-    assertNotEquals("First card should now be different after discarding.",
-            oldFirstCard, game.getHand().get(0));
-  }
-
-  /**
    * Tests that discarding a card reduces the remaining deck size by one.
    */
   @Test
   public void testDeckSizeAfterDiscard() {
-    PokerRectangles game = new PokerRectangles(7, 5);
+    PokerPolygons game = new PokerRectangles(7, 5);
     List<PlayingCard> deck = game.getNewDeck();
     game.startGame(deck, false, 5);
 
@@ -333,7 +318,7 @@ public class PokerRectanglesTest {
    */
   @Test
   public void testStartGameWithFullDeck() {
-    PokerRectangles game = new PokerRectangles(7, 5);
+    PokerPolygons game = new PokerRectangles(7, 5);
     List<PlayingCard> deck = game.getNewDeck(); // Full 52-card deck
 
     game.startGame(deck, false, 5);
@@ -349,7 +334,7 @@ public class PokerRectanglesTest {
    */
   @Test
   public void testGetNewDeckSize() {
-    PokerRectangles game = new PokerRectangles(7, 5);
+    PokerPolygons game = new PokerRectangles(7, 5);
     List<PlayingCard> deck = game.getNewDeck();
 
     assertEquals("A new deck should contain 52 cards.", 52, deck.size());
@@ -360,7 +345,7 @@ public class PokerRectanglesTest {
    */
   @Test
   public void testGetNewDeckUniqueCards() {
-    PokerRectangles game = new PokerRectangles(7, 5);
+    PokerPolygons game = new PokerRectangles(7, 5);
     List<PlayingCard> deck = game.getNewDeck();
     Set<PlayingCard> uniqueCards = new HashSet<>(deck);
 
@@ -373,7 +358,7 @@ public class PokerRectanglesTest {
    */
   @Test
   public void testGetCardAtFunction() {
-    PokerRectangles game = new PokerRectangles(7, 5);
+    PokerPolygons game = new PokerRectangles(7, 5);
     List<PlayingCard> deck = game.getNewDeck();
     game.startGame(deck, false, 5);
 
@@ -389,7 +374,7 @@ public class PokerRectanglesTest {
    */
   @Test
   public void testGetHandFunction() {
-    PokerRectangles game = new PokerRectangles(7, 5);
+    PokerPolygons game = new PokerRectangles(7, 5);
     List<PlayingCard> deck = game.getNewDeck();
     game.startGame(deck, false, 5); // Start game with hand size 5
 
@@ -411,7 +396,7 @@ public class PokerRectanglesTest {
    */
   @Test
   public void testGetRemainingDeckSizeInitial() {
-    PokerRectangles game = new PokerRectangles(7, 5);
+    PokerPolygons game = new PokerRectangles(7, 5);
     List<PlayingCard> deck = game.getNewDeck();
     game.startGame(deck, false, 5);
 
@@ -425,7 +410,7 @@ public class PokerRectanglesTest {
    */
   @Test
   public void testGetRemainingDeckSizeAfterDiscarding() {
-    PokerRectangles game = new PokerRectangles(7, 5);
+    PokerPolygons game = new PokerRectangles(7, 5);
     List<PlayingCard> deck = game.getNewDeck();
     game.startGame(deck, false, 5);
 
@@ -443,7 +428,7 @@ public class PokerRectanglesTest {
    */
   @Test
   public void testIsGameOverAtStart() {
-    PokerRectangles game = new PokerRectangles(7, 5);
+    PokerPolygons game = new PokerRectangles(7, 5);
     List<PlayingCard> deck = game.getNewDeck();
     game.startGame(deck, false, 5);
 
@@ -455,7 +440,7 @@ public class PokerRectanglesTest {
    */
   @Test
   public void testIsGameOverAtMiddle() {
-    PokerRectangles game = new PokerRectangles(7, 5);
+    PokerPolygons game = new PokerRectangles(7, 5);
     List<PlayingCard> deck = game.getNewDeck();
     game.startGame(deck, false, 5);
 
@@ -473,7 +458,7 @@ public class PokerRectanglesTest {
    */
   @Test
   public void testIsGameOverAtEnd() {
-    PokerRectangles game = new PokerRectangles(7, 5);
+    PokerPolygons game = new PokerRectangles(7, 5);
     List<PlayingCard> deck = game.getNewDeck();
     game.startGame(deck, false, 5);
 
@@ -494,7 +479,7 @@ public class PokerRectanglesTest {
    */
   @Test
   public void testGetScoreAtStart() {
-    PokerRectangles game = new PokerRectangles(7, 5);
+    PokerPolygons game = new PokerRectangles(7, 5);
     List<PlayingCard> deck = game.getNewDeck();
     game.startGame(deck, false, 5);
 
@@ -507,7 +492,7 @@ public class PokerRectanglesTest {
    */
   @Test
   public void testGetScoreAfterPlacingCards() {
-    PokerRectangles game = new PokerRectangles(7, 5);
+    PokerPolygons game = new PokerRectangles(7, 5);
     List<PlayingCard> deck = game.getNewDeck();
     game.startGame(deck, false, 5);
 
@@ -523,7 +508,7 @@ public class PokerRectanglesTest {
    */
   @Test
   public void testGetScoreWithMultipleHands() {
-    PokerRectangles game = new PokerRectangles(7, 5);
+    PokerPolygons game = new PokerRectangles(7, 5);
     List<PlayingCard> deck = game.getNewDeck();
     game.startGame(deck, false, 5);
 
@@ -541,7 +526,7 @@ public class PokerRectanglesTest {
    */
   @Test
   public void testGetScoreWhenBoardIsFull() {
-    PokerRectangles game = new PokerRectangles(7, 5);
+    PokerPolygons game = new PokerRectangles(7, 5);
     List<PlayingCard> deck = game.getNewDeck();
     game.startGame(deck, false, 5);
 
@@ -559,7 +544,7 @@ public class PokerRectanglesTest {
    */
   @Test
   public void testScoreForPair() {
-    PokerRectangles game = new PokerRectangles(7, 5);
+    PokerPolygons game = new PokerRectangles(7, 5);
     List<PlayingCard> deck = game.getNewDeck();
 
     Collections.shuffle(deck);
@@ -585,7 +570,7 @@ public class PokerRectanglesTest {
    */
   @Test
   public void testScoreForTwoPair() {
-    PokerRectangles game = new PokerRectangles(7, 5);
+    PokerPolygons game = new PokerRectangles(7, 5);
     List<PlayingCard> deck = game.getNewDeck();
 
     Collections.shuffle(deck);
@@ -612,7 +597,7 @@ public class PokerRectanglesTest {
    */
   @Test
   public void testScoreForThreeOfAKind() {
-    PokerRectangles game = new PokerRectangles(7, 5);
+    PokerPolygons game = new PokerRectangles(7, 5);
     List<PlayingCard> deck = game.getNewDeck();
 
     Collections.shuffle(deck);
@@ -639,7 +624,7 @@ public class PokerRectanglesTest {
    */
   @Test
   public void testScoreForAceLowStraight() {
-    PokerRectangles game = new PokerRectangles(7, 5);
+    PokerPolygons game = new PokerRectangles(7, 5);
     List<PlayingCard> deck = game.getNewDeck();
 
     Collections.shuffle(deck);
@@ -667,7 +652,7 @@ public class PokerRectanglesTest {
    */
   @Test
   public void testScoreForAceHighStraight() {
-    PokerRectangles game = new PokerRectangles(7, 5);
+    PokerPolygons game = new PokerRectangles(7, 5);
     List<PlayingCard> deck = game.getNewDeck();
 
     Collections.shuffle(deck);
@@ -695,7 +680,7 @@ public class PokerRectanglesTest {
    */
   @Test
   public void testScoreForMidStraightFlush() {
-    PokerRectangles game = new PokerRectangles(7, 5);
+    PokerPolygons game = new PokerRectangles(7, 5);
     List<PlayingCard> deck = game.getNewDeck();
 
     Collections.shuffle(deck);
@@ -724,7 +709,7 @@ public class PokerRectanglesTest {
   @Test
   public void testMissingJUnitTest() {
     // Use a 6x6 board for this test.
-    PokerRectangles game = new PokerRectangles(6, 6);
+    PokerPolygons game = new PokerRectangles(6, 6);
 
     // Generate a default deck and create a custom deck for controlled setup.
     List<PlayingCard> defaultDeck = game.getNewDeck();

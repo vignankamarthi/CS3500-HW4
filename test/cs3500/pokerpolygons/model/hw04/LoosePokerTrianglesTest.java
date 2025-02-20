@@ -1,4 +1,4 @@
-package cs3500.pokerpolygons.model.hw02;
+package cs3500.pokerpolygons.model.hw04;
 
 import org.junit.Test;
 
@@ -13,14 +13,19 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+
+import cs3500.pokerpolygons.model.hw02.PlayingCard;
+import cs3500.pokerpolygons.model.hw02.PokerPolygons;
+import cs3500.pokerpolygons.model.hw02.Ranks;
+import cs3500.pokerpolygons.model.hw02.StandardPlayingCard;
+import cs3500.pokerpolygons.model.hw02.Suits;
 import cs3500.pokerpolygons.view.PokerTrianglesTextualView;
 
-
 /**
- * Tests for the PokerTriangle class including exceptions, general behavior,
+ * Tests for the LoosePokerTriangles class including exceptions, general behavior,
  * and edge case behavior.
  */
-public class PokerTrianglesTest {
+public class LoosePokerTrianglesTest {
 
   /**
    * 1. Test placeCardInPosition: Handles multiple IllegalStateException and
@@ -28,7 +33,7 @@ public class PokerTrianglesTest {
    */
   @Test
   public void testPlaceCardInPosition() {
-    PokerPolygons game = new PokerTriangles(5);
+    PokerPolygons game = new LoosePokerTriangles(5);
     List<PlayingCard> deck = game.getNewDeck();
     game.startGame(deck, false, 5);
 
@@ -57,13 +62,12 @@ public class PokerTrianglesTest {
    */
   @Test
   public void testDiscardCard() {
-    PokerPolygons game = new PokerTriangles(5);
+    PokerPolygons game = new LoosePokerTriangles(5);
     List<PlayingCard> deck = game.getNewDeck();
     game.startGame(deck, false, 5);
 
     for (int i = 0; i < 5; i++) {
       game.discardCard(0);
-
     }
 
     try {
@@ -77,7 +81,6 @@ public class PokerTrianglesTest {
     } catch (IllegalArgumentException e) {
       assertEquals("Card index out of bounds of the hand: 11", e.getMessage());
     }
-
   }
 
   /**
@@ -85,7 +88,7 @@ public class PokerTrianglesTest {
    */
   @Test
   public void testStartGame() {
-    PokerPolygons game = new PokerTriangles(5);
+    PokerPolygons game = new LoosePokerTriangles(5);
     List<PlayingCard> deck = game.getNewDeck();
 
     game.startGame(deck, false, 5);
@@ -105,7 +108,6 @@ public class PokerTrianglesTest {
     } catch (IllegalStateException e) {
       assertEquals("Game has already started.", e.getMessage());
     }
-
   }
 
   /**
@@ -113,7 +115,7 @@ public class PokerTrianglesTest {
    */
   @Test
   public void testGetWidth() {
-    PokerPolygons game = new PokerTriangles(5);
+    PokerPolygons game = new LoosePokerTriangles(5);
     assertEquals(5, game.getWidth());
   }
 
@@ -122,7 +124,7 @@ public class PokerTrianglesTest {
    */
   @Test
   public void testGetHeight() {
-    PokerPolygons game = new PokerTriangles(5);
+    PokerPolygons game = new LoosePokerTriangles(5);
     assertEquals(5, game.getHeight());
   }
 
@@ -131,7 +133,7 @@ public class PokerTrianglesTest {
    */
   @Test
   public void testGetNewDeck() {
-    PokerPolygons game = new PokerTriangles(5);
+    PokerPolygons game = new LoosePokerTriangles(5);
     List<PlayingCard> deck = game.getNewDeck();
     assertEquals(52, deck.size());
   }
@@ -141,7 +143,7 @@ public class PokerTrianglesTest {
    */
   @Test
   public void testGetCardAt() {
-    PokerPolygons game = new PokerTriangles(5);
+    PokerPolygons game = new LoosePokerTriangles(5);
     List<PlayingCard> deck = game.getNewDeck();
     game.startGame(deck, false, 5);
 
@@ -163,7 +165,7 @@ public class PokerTrianglesTest {
    */
   @Test
   public void testGetHand() {
-    PokerPolygons game = new PokerTriangles(5);
+    PokerPolygons game = new LoosePokerTriangles(5);
 
     try {
       game.getHand();
@@ -177,7 +179,7 @@ public class PokerTrianglesTest {
    */
   @Test
   public void testGetScore() {
-    PokerPolygons game = new PokerTriangles(5);
+    PokerPolygons game = new LoosePokerTriangles(5);
 
     try {
       game.getScore();
@@ -191,7 +193,7 @@ public class PokerTrianglesTest {
    */
   @Test
   public void testGetRemainingDeckSize() {
-    PokerPolygons game = new PokerTriangles(5);
+    PokerPolygons game = new LoosePokerTriangles(5);
 
     try {
       game.getRemainingDeckSize();
@@ -205,7 +207,7 @@ public class PokerTrianglesTest {
    */
   @Test
   public void testIsGameOver() {
-    PokerPolygons game = new PokerTriangles(5);
+    PokerPolygons game = new LoosePokerTriangles(5);
 
     try {
       game.isGameOver();
@@ -222,7 +224,7 @@ public class PokerTrianglesTest {
    */
   @Test
   public void testPlaceCardInCorrectPosition() {
-    PokerPolygons game = new PokerTriangles(5);
+    PokerPolygons game = new LoosePokerTriangles(5);
     List<PlayingCard> deck = game.getNewDeck();
     game.startGame(deck, false, 5);
 
@@ -237,7 +239,7 @@ public class PokerTrianglesTest {
    */
   @Test
   public void testPlaceMultipleCardsInCorrectPositions() {
-    PokerPolygons game = new PokerTriangles(5);
+    PokerPolygons game = new LoosePokerTriangles(5);
 
     // Generate a deck
     List<PlayingCard> deck = game.getNewDeck();
@@ -263,7 +265,7 @@ public class PokerTrianglesTest {
    */
   @Test
   public void testDeckSizeDecreasesAfterPlacingCards() {
-    PokerPolygons game = new PokerTriangles(5);
+    PokerPolygons game = new LoosePokerTriangles(5);
     List<PlayingCard> deck = game.getNewDeck();
     game.startGame(deck, false, 5);
 
@@ -276,13 +278,12 @@ public class PokerTrianglesTest {
     assertEquals(initialDeckSize - 3, game.getRemainingDeckSize());
   }
 
-
   /**
    * Tests that unoccupied board positions remain empty.
    */
   @Test
   public void testUnoccupiedPositionsRemainEmpty() {
-    PokerPolygons game = new PokerTriangles(5);
+    PokerPolygons game = new LoosePokerTriangles(5);
     List<PlayingCard> deck = game.getNewDeck();
     game.startGame(deck, false, 5);
 
@@ -300,7 +301,7 @@ public class PokerTrianglesTest {
    */
   @Test
   public void testHandSizeAfterDiscard() {
-    PokerPolygons game = new PokerTriangles(5);
+    PokerPolygons game = new LoosePokerTriangles(5);
     List<PlayingCard> deck = game.getNewDeck();
     game.startGame(deck, false, 5);
 
@@ -311,13 +312,12 @@ public class PokerTrianglesTest {
     assertEquals(initialHandSize, game.getHand().size());
   }
 
-
   /**
    * Tests that discarding a card reduces the remaining deck size.
    */
   @Test
   public void testDeckSizeAfterDiscard() {
-    PokerPolygons game = new PokerTriangles(5);
+    PokerPolygons game = new LoosePokerTriangles(5);
     List<PlayingCard> deck = game.getNewDeck();
     game.startGame(deck, false, 5);
 
@@ -328,15 +328,12 @@ public class PokerTrianglesTest {
     assertEquals(initialDeckSize - 1, game.getRemainingDeckSize());
   }
 
-
-
-
   /**
    * Tests that the game starts correctly with a full deck of 52 cards.
    */
   @Test
   public void testStartGameWithFullDeck() {
-    PokerPolygons game = new PokerTriangles(5);
+    PokerPolygons game = new LoosePokerTriangles(5);
     List<PlayingCard> deck = game.getNewDeck(); // Full 52-card deck
 
     game.startGame(deck, false, 5);
@@ -350,19 +347,18 @@ public class PokerTrianglesTest {
    */
   @Test
   public void testGetNewDeckSize() {
-    PokerPolygons game = new PokerTriangles(5);
+    PokerPolygons game = new LoosePokerTriangles(5);
     List<PlayingCard> deck = game.getNewDeck();
 
     assertEquals(52, deck.size());
   }
-
 
   /**
    * Tests that getNewDeck() contains only unique cards.
    */
   @Test
   public void testGetNewDeckUniqueCards() {
-    PokerPolygons game = new PokerTriangles(5);
+    PokerPolygons game = new LoosePokerTriangles(5);
     List<PlayingCard> deck = game.getNewDeck();
     Set<PlayingCard> uniqueCards = new HashSet<>(deck);
 
@@ -374,7 +370,7 @@ public class PokerTrianglesTest {
    */
   @Test
   public void testGetCardAtFunction() {
-    PokerPolygons game = new PokerTriangles(5);
+    PokerPolygons game = new LoosePokerTriangles(5);
     List<PlayingCard> deck = game.getNewDeck();
     game.startGame(deck, false, 5);
 
@@ -386,7 +382,6 @@ public class PokerTrianglesTest {
 
     // Check if the correct card are retrieved
     assertEquals(defaultDeck.get(0), game.getCardAt(0, 0));
-
   }
 
   /**
@@ -394,13 +389,13 @@ public class PokerTrianglesTest {
    */
   @Test
   public void testGetHandFunction() {
-    PokerPolygons game = new PokerTriangles(5);
+    PokerPolygons game = new LoosePokerTriangles(5);
     List<PlayingCard> deck = game.getNewDeck();
     game.startGame(deck, false, 5); // Start game with hand size 5
 
     List<PlayingCard> hand = game.getHand();
 
-    // TO create the default deck again to compare to the cards inserted into the hand.
+    // To create the default deck again to compare to the cards inserted into the hand.
     List<PlayingCard> defaultDeck = game.getNewDeck();
 
     // Ensure hand size matches the expected number
@@ -417,7 +412,7 @@ public class PokerTrianglesTest {
    */
   @Test
   public void testGetRemainingDeckSizeInitial() {
-    PokerPolygons game = new PokerTriangles(5);
+    PokerPolygons game = new LoosePokerTriangles(5);
     List<PlayingCard> deck = game.getNewDeck();
     game.startGame(deck, false, 5);
 
@@ -430,7 +425,7 @@ public class PokerTrianglesTest {
    */
   @Test
   public void testGetRemainingDeckSizeAfterDiscarding() {
-    PokerPolygons game = new PokerTriangles(5);
+    PokerPolygons game = new LoosePokerTriangles(5);
     List<PlayingCard> deck = game.getNewDeck();
     game.startGame(deck, false, 5);
 
@@ -446,7 +441,7 @@ public class PokerTrianglesTest {
    */
   @Test
   public void testIsGameOverAtStart() {
-    PokerPolygons game = new PokerTriangles(5);
+    PokerPolygons game = new LoosePokerTriangles(5);
     List<PlayingCard> deck = game.getNewDeck();
     game.startGame(deck, false, 5);
 
@@ -459,7 +454,7 @@ public class PokerTrianglesTest {
    */
   @Test
   public void testIsGameOverAtMiddle() {
-    PokerPolygons game = new PokerTriangles(5);
+    PokerPolygons game = new LoosePokerTriangles(5);
     List<PlayingCard> deck = game.getNewDeck();
     game.startGame(deck, false, 5);
 
@@ -478,14 +473,13 @@ public class PokerTrianglesTest {
    */
   @Test
   public void testIsGameOverAtEnd() {
-    PokerPolygons game = new PokerTriangles(5);
+    PokerPolygons game = new LoosePokerTriangles(5);
     List<PlayingCard> deck = game.getNewDeck();
 
     // Start the game with a known deck
     game.startGame(deck, false, 5);
 
     // Randomizer to select a card index from 0-4
-    // I wanted to randomize the cards for no reason lol.
     Random rand = new Random();
 
     // Fill up the entire game board
@@ -507,7 +501,7 @@ public class PokerTrianglesTest {
    */
   @Test
   public void testGetScoreAtStart() {
-    PokerPolygons game = new PokerTriangles(5);
+    PokerPolygons game = new LoosePokerTriangles(5);
     List<PlayingCard> deck = game.getNewDeck();
     game.startGame(deck, false, 5);
 
@@ -519,7 +513,7 @@ public class PokerTrianglesTest {
    */
   @Test
   public void testGetScoreAfterPlacingCards() {
-    PokerPolygons game = new PokerTriangles(5);
+    PokerPolygons game = new LoosePokerTriangles(5);
     List<PlayingCard> deck = game.getNewDeck();
     game.startGame(deck, false, 5);
 
@@ -533,14 +527,12 @@ public class PokerTrianglesTest {
     assertTrue(game.getScore() > 0); // Score should increase
   }
 
-
-
   /**
    * Test that getScore() correctly calculates when multiple hands are completed.
    */
   @Test
   public void testGetScoreWithMultipleHands() {
-    PokerPolygons game = new PokerTriangles(5);
+    PokerPolygons game = new LoosePokerTriangles(5);
     List<PlayingCard> deck = game.getNewDeck();
     game.startGame(deck, false, 5);
 
@@ -563,7 +555,7 @@ public class PokerTrianglesTest {
    */
   @Test
   public void testGetScoreWhenBoardIsFull() {
-    PokerPolygons game = new PokerTriangles(5);
+    PokerPolygons game = new LoosePokerTriangles(5);
     List<PlayingCard> deck = game.getNewDeck();
     game.startGame(deck, false, 5);
 
@@ -582,11 +574,9 @@ public class PokerTrianglesTest {
    */
   @Test
   public void testScoreForPair() {
-    // Initialize game
-    PokerPolygons game = new PokerTriangles(5);
+    PokerPolygons game = new LoosePokerTriangles(5);
     List<PlayingCard> deck = game.getNewDeck();
 
-    // Shuffle deck before adding custom pair cards
     Collections.shuffle(deck);
 
     deck.add(0, new StandardPlayingCard(Ranks.ACE, Suits.HEARTS));
@@ -595,10 +585,8 @@ public class PokerTrianglesTest {
     deck.add(0, new StandardPlayingCard(Ranks.FOUR, Suits.DIAMONDS));
     deck.add(0, new StandardPlayingCard(Ranks.FIVE, Suits.HEARTS));
 
-    // Start the game with shuffle disabled (so our straight is preserved)
     game.startGame(deck, false, 5);
 
-    // Place the five pre-determined pair cards on the board
     for (int i = 0; i < 5; i++) {
       game.placeCardInPosition(0, i, 0);
     }
@@ -611,11 +599,9 @@ public class PokerTrianglesTest {
    */
   @Test
   public void testScoreForTwoPair() {
-    // Initialize game
-    PokerPolygons game = new PokerTriangles(5);
+    PokerPolygons game = new LoosePokerTriangles(5);
     List<PlayingCard> deck = game.getNewDeck();
 
-    // Shuffle deck before adding custom two-pair cards
     Collections.shuffle(deck);
 
     deck.add(0, new StandardPlayingCard(Ranks.ACE, Suits.HEARTS));
@@ -624,15 +610,12 @@ public class PokerTrianglesTest {
     deck.add(0, new StandardPlayingCard(Ranks.FOUR, Suits.DIAMONDS));
     deck.add(0, new StandardPlayingCard(Ranks.FIVE, Suits.HEARTS));
 
-    // Start the game with shuffle disabled (so our straight is preserved)
     game.startGame(deck, false, 5);
 
-    // Place the five pre-determined two-pair cards on the board
     for (int i = 0; i < 5; i++) {
       game.placeCardInPosition(0, i, 0);
     }
 
-    // Verify the score is exactly 5 (Two Pair)
     assertEquals(5, game.getScore()); // Two pairs should score exactly 5
   }
 
@@ -641,10 +624,9 @@ public class PokerTrianglesTest {
    */
   @Test
   public void testScoreForThreeOfAKind() {
-    PokerPolygons game = new PokerTriangles(5);
+    PokerPolygons game = new LoosePokerTriangles(5);
     List<PlayingCard> deck = game.getNewDeck();
 
-    // Shuffle deck before adding custom three-of-a-kind cards
     Collections.shuffle(deck);
 
     deck.add(0, new StandardPlayingCard(Ranks.ACE, Suits.HEARTS));
@@ -653,10 +635,8 @@ public class PokerTrianglesTest {
     deck.add(0, new StandardPlayingCard(Ranks.FOUR, Suits.DIAMONDS));
     deck.add(0, new StandardPlayingCard(Ranks.FIVE, Suits.HEARTS));
 
-    // Start the game with shuffle disabled (so our straight is preserved)
     game.startGame(deck, false, 5);
 
-    // Place the five pre-determined three-of-a-kind cards on the board
     for (int i = 0; i < 5; i++) {
       game.placeCardInPosition(0, i, 0);
     }
@@ -670,23 +650,19 @@ public class PokerTrianglesTest {
    */
   @Test
   public void testScoreForAceLowStraight() {
-    PokerPolygons game = new PokerTriangles(5);
+    PokerPolygons game = new LoosePokerTriangles(5);
     List<PlayingCard> deck = game.getNewDeck();
 
-    // Shuffle deck before adding custom straight cards
     Collections.shuffle(deck);
 
-    // Insert an Ace-low straight (A-2-3-4-5 of mixed suits) at the top of the deck
     deck.add(0, new StandardPlayingCard(Ranks.ACE, Suits.HEARTS));
     deck.add(0, new StandardPlayingCard(Ranks.TWO, Suits.SPADES));
     deck.add(0, new StandardPlayingCard(Ranks.THREE, Suits.CLUBS));
     deck.add(0, new StandardPlayingCard(Ranks.FOUR, Suits.DIAMONDS));
     deck.add(0, new StandardPlayingCard(Ranks.FIVE, Suits.HEARTS));
 
-    // Start the game with shuffle disabled (so our straight is preserved)
     game.startGame(deck, false, 5);
 
-    // Place the five pre-determined straight cards on the board
     for (int i = 0; i < 5; i++) {
       game.placeCardInPosition(0, i, 0);
     }
@@ -700,23 +676,19 @@ public class PokerTrianglesTest {
    */
   @Test
   public void testScoreForAceHighStraight() {
-    PokerPolygons game = new PokerTriangles(5);
+    PokerPolygons game = new LoosePokerTriangles(5);
     List<PlayingCard> deck = game.getNewDeck();
 
-    // Shuffle deck before adding custom straight cards
     Collections.shuffle(deck);
 
-    // Insert an Ace-high straight (10-J-Q-K-A of mixed suits) at the top of the deck
     deck.add(0, new StandardPlayingCard(Ranks.TEN, Suits.HEARTS));
     deck.add(0, new StandardPlayingCard(Ranks.JACK, Suits.SPADES));
     deck.add(0, new StandardPlayingCard(Ranks.QUEEN, Suits.CLUBS));
     deck.add(0, new StandardPlayingCard(Ranks.KING, Suits.DIAMONDS));
     deck.add(0, new StandardPlayingCard(Ranks.ACE, Suits.HEARTS));
 
-    // Start the game with shuffle disabled (so our straight is preserved)
     game.startGame(deck, false, 5);
 
-    // Place the five pre-determined straight cards on the board
     for (int i = 0; i < 5; i++) {
       game.placeCardInPosition(0, i, 0);
     }
@@ -730,23 +702,19 @@ public class PokerTrianglesTest {
    */
   @Test
   public void testScoreForMidStraight() {
-    PokerPolygons game = new PokerTriangles(5);
+    PokerPolygons game = new LoosePokerTriangles(5);
     List<PlayingCard> deck = game.getNewDeck();
 
-    // Shuffle deck before adding custom straight cards
     Collections.shuffle(deck);
 
-    // Insert a middle straight (5-6-7-8-9 of mixed suits) at the top of the deck
     deck.add(0, new StandardPlayingCard(Ranks.FIVE, Suits.HEARTS));
     deck.add(0, new StandardPlayingCard(Ranks.SIX, Suits.SPADES));
     deck.add(0, new StandardPlayingCard(Ranks.SEVEN, Suits.CLUBS));
     deck.add(0, new StandardPlayingCard(Ranks.EIGHT, Suits.DIAMONDS));
     deck.add(0, new StandardPlayingCard(Ranks.NINE, Suits.HEARTS));
 
-    // Start the game with shuffle disabled (so our straight is preserved)
     game.startGame(deck, false, 5);
 
-    // Place the five pre-determined straight cards on the board
     for (int i = 0; i < 5; i++) {
       game.placeCardInPosition(0, i, 0);
     }
@@ -759,23 +727,19 @@ public class PokerTrianglesTest {
    */
   @Test
   public void testScoreForFlush() {
-    PokerPolygons game = new PokerTriangles(5);
+    PokerPolygons game = new LoosePokerTriangles(5);
     List<PlayingCard> deck = game.getNewDeck();
 
-    // Manually shuffle the deck BEFORE adding flush cards
     Collections.shuffle(deck);
 
-    // Insert a known flush (five cards of the same suit) at the top of the deck
     deck.add(0, new StandardPlayingCard(Ranks.ACE, Suits.HEARTS));
     deck.add(0, new StandardPlayingCard(Ranks.KING, Suits.HEARTS));
     deck.add(0, new StandardPlayingCard(Ranks.QUEEN, Suits.HEARTS));
     deck.add(0, new StandardPlayingCard(Ranks.JACK, Suits.HEARTS));
-    deck.add(0, new StandardPlayingCard(Ranks.NINE, Suits.HEARTS));
+    deck.add(0, new StandardPlayingCard(Ranks.FOUR, Suits.HEARTS));
 
-    // Start the game with shuffle disabled (so our manually set flush is preserved)
     game.startGame(deck, false, 5);
 
-    // Place the five pre-determined flush cards on the board
     for (int i = 0; i < 5; i++) {
       game.placeCardInPosition(0, i, 0);
     }
@@ -788,10 +752,9 @@ public class PokerTrianglesTest {
    */
   @Test
   public void testScoreForFullHouse() {
-    PokerPolygons game = new PokerTriangles(5);
+    PokerPolygons game = new LoosePokerTriangles(5);
     List<PlayingCard> deck = game.getNewDeck();
 
-    // Manually shuffle the deck BEFORE adding full house cards
     Collections.shuffle(deck);
 
     deck.add(0, new StandardPlayingCard(Ranks.ACE, Suits.HEARTS));
@@ -800,10 +763,8 @@ public class PokerTrianglesTest {
     deck.add(0, new StandardPlayingCard(Ranks.JACK, Suits.HEARTS));
     deck.add(0, new StandardPlayingCard(Ranks.JACK, Suits.CLUBS));
 
-    // Start the game with shuffle disabled
     game.startGame(deck, false, 5);
 
-    // Place the five pre-determined full house cards on the board
     for (int i = 0; i < 5; i++) {
       game.placeCardInPosition(0, i, 0);
     }
@@ -816,10 +777,9 @@ public class PokerTrianglesTest {
    */
   @Test
   public void testScoreForFourOfAKind() {
-    PokerPolygons game = new PokerTriangles(5);
+    PokerPolygons game = new LoosePokerTriangles(5);
     List<PlayingCard> deck = game.getNewDeck();
 
-    // Manually shuffle the deck BEFORE adding four of a kind cards
     Collections.shuffle(deck);
 
     deck.add(0, new StandardPlayingCard(Ranks.ACE, Suits.HEARTS));
@@ -828,10 +788,8 @@ public class PokerTrianglesTest {
     deck.add(0, new StandardPlayingCard(Ranks.ACE, Suits.HEARTS));
     deck.add(0, new StandardPlayingCard(Ranks.JACK, Suits.CLUBS));
 
-    // Start the game with shuffle disabled
     game.startGame(deck, false, 5);
 
-    // Place the five pre-determined four of a kind cards on the board
     for (int i = 0; i < 5; i++) {
       game.placeCardInPosition(0, i, 0);
     }
@@ -845,23 +803,19 @@ public class PokerTrianglesTest {
    */
   @Test
   public void testScoreForAceLowStraightFlush() {
-    PokerPolygons game = new PokerTriangles(5);
+    PokerPolygons game = new LoosePokerTriangles(5);
     List<PlayingCard> deck = game.getNewDeck();
 
-    // Shuffle deck before adding custom straight flush cards
     Collections.shuffle(deck);
 
-    // Insert Ace-low straight flush (A-2-3-4-5 of HEARTS) at the top of the deck
     deck.add(0, new StandardPlayingCard(Ranks.ACE, Suits.HEARTS));
     deck.add(0, new StandardPlayingCard(Ranks.TWO, Suits.HEARTS));
     deck.add(0, new StandardPlayingCard(Ranks.THREE, Suits.HEARTS));
     deck.add(0, new StandardPlayingCard(Ranks.FOUR, Suits.HEARTS));
     deck.add(0, new StandardPlayingCard(Ranks.FIVE, Suits.HEARTS));
 
-    // Start the game with shuffle disabled (so our straight flush is preserved)
     game.startGame(deck, false, 5);
 
-    // Place the five pre-determined straight flush cards on the board
     for (int i = 0; i < 5; i++) {
       game.placeCardInPosition(0, i, 0);
     }
@@ -875,23 +829,19 @@ public class PokerTrianglesTest {
    */
   @Test
   public void testScoreForAceHighStraightFlush() {
-    PokerPolygons game = new PokerTriangles(5);
+    PokerPolygons game = new LoosePokerTriangles(5);
     List<PlayingCard> deck = game.getNewDeck();
 
-    // Shuffle deck before adding custom straight flush cards
     Collections.shuffle(deck);
 
-    // Insert Ace-high straight flush (10-J-Q-K-A of SPADES) at the top of the deck
     deck.add(0, new StandardPlayingCard(Ranks.TEN, Suits.SPADES));
     deck.add(0, new StandardPlayingCard(Ranks.JACK, Suits.SPADES));
     deck.add(0, new StandardPlayingCard(Ranks.QUEEN, Suits.SPADES));
     deck.add(0, new StandardPlayingCard(Ranks.KING, Suits.SPADES));
     deck.add(0, new StandardPlayingCard(Ranks.ACE, Suits.SPADES));
 
-    // Start the game with shuffle disabled (so our straight flush is preserved)
     game.startGame(deck, false, 5);
 
-    // Place the five pre-determined straight flush cards on the board
     for (int i = 0; i < 5; i++) {
       game.placeCardInPosition(0, i, 0);
     }
@@ -905,23 +855,19 @@ public class PokerTrianglesTest {
    */
   @Test
   public void testScoreForMidStraightFlush() {
-    PokerPolygons game = new PokerTriangles(5);
+    PokerPolygons game = new LoosePokerTriangles(5);
     List<PlayingCard> deck = game.getNewDeck();
 
-    // Shuffle deck before adding custom straight flush cards
     Collections.shuffle(deck);
 
-    // Insert a middle straight flush (5-6-7-8-9 of DIAMONDS) at the top of the deck
     deck.add(0, new StandardPlayingCard(Ranks.FIVE, Suits.DIAMONDS));
     deck.add(0, new StandardPlayingCard(Ranks.SIX, Suits.DIAMONDS));
     deck.add(0, new StandardPlayingCard(Ranks.SEVEN, Suits.DIAMONDS));
     deck.add(0, new StandardPlayingCard(Ranks.EIGHT, Suits.DIAMONDS));
     deck.add(0, new StandardPlayingCard(Ranks.NINE, Suits.DIAMONDS));
 
-    // Start the game with shuffle disabled (so our straight flush is preserved)
     game.startGame(deck, false, 5);
 
-    // Place the five pre-determined straight flush cards on the board
     for (int i = 0; i < 5; i++) {
       game.placeCardInPosition(0, i, 0);
     }
@@ -929,67 +875,54 @@ public class PokerTrianglesTest {
     assertEquals(75, game.getScore()); // Middle straight flush should score 75
   }
 
-
   /**
    * Test that playing a full game with a board of side length 6 results in the expected score.
    */
   @Test
   public void testMissingJUnitTest() {
-    PokerPolygons game = new PokerTriangles(6);
+    PokerPolygons game = new LoosePokerTriangles(6);
 
-    // Generate a default deck and create a new list for controlled setup
     List<PlayingCard> defaultDeck = game.getNewDeck();
     List<PlayingCard> customDeck = new ArrayList<>();
 
-    // Add cards in the EXACT order as required by the JUnit test case
-    // I couldn't pass for homework 2
-    customDeck.add(new StandardPlayingCard(Ranks.QUEEN, Suits.SPADES));  // (0,0)
+    customDeck.add(new StandardPlayingCard(Ranks.QUEEN, Suits.SPADES));
+    customDeck.add(new StandardPlayingCard(Ranks.ACE, Suits.SPADES));
+    customDeck.add(new StandardPlayingCard(Ranks.THREE, Suits.HEARTS));
+    customDeck.add(new StandardPlayingCard(Ranks.TWO, Suits.SPADES));
+    customDeck.add(new StandardPlayingCard(Ranks.SEVEN, Suits.CLUBS));
+    customDeck.add(new StandardPlayingCard(Ranks.THREE, Suits.CLUBS));
+    customDeck.add(new StandardPlayingCard(Ranks.FOUR, Suits.SPADES));
+    customDeck.add(new StandardPlayingCard(Ranks.FOUR, Suits.CLUBS));
+    customDeck.add(new StandardPlayingCard(Ranks.FOUR, Suits.DIAMONDS));
+    customDeck.add(new StandardPlayingCard(Ranks.FOUR, Suits.HEARTS));
+    customDeck.add(new StandardPlayingCard(Ranks.JACK, Suits.HEARTS));
+    customDeck.add(new StandardPlayingCard(Ranks.TEN, Suits.HEARTS));
+    customDeck.add(new StandardPlayingCard(Ranks.NINE, Suits.HEARTS));
+    customDeck.add(new StandardPlayingCard(Ranks.EIGHT, Suits.HEARTS));
+    customDeck.add(new StandardPlayingCard(Ranks.QUEEN, Suits.HEARTS));
+    customDeck.add(new StandardPlayingCard(Ranks.THREE, Suits.SPADES));
+    customDeck.add(new StandardPlayingCard(Ranks.SEVEN, Suits.DIAMONDS));
+    customDeck.add(new StandardPlayingCard(Ranks.THREE, Suits.DIAMONDS));
+    customDeck.add(new StandardPlayingCard(Ranks.SEVEN, Suits.HEARTS));
+    customDeck.add(new StandardPlayingCard(Ranks.SIX, Suits.SPADES));
+    customDeck.add(new StandardPlayingCard(Ranks.SEVEN, Suits.SPADES));
 
-    customDeck.add(new StandardPlayingCard(Ranks.ACE, Suits.SPADES));    // (1,0)
-    customDeck.add(new StandardPlayingCard(Ranks.THREE, Suits.HEARTS));  // (1,1)
-
-    customDeck.add(new StandardPlayingCard(Ranks.TWO, Suits.SPADES));    // (2,0)
-    customDeck.add(new StandardPlayingCard(Ranks.SEVEN, Suits.CLUBS));   // (2,1)
-    customDeck.add(new StandardPlayingCard(Ranks.THREE, Suits.CLUBS));   // (2,2)
-
-    customDeck.add(new StandardPlayingCard(Ranks.FOUR, Suits.SPADES));   // (3,0)
-    customDeck.add(new StandardPlayingCard(Ranks.FOUR, Suits.CLUBS));    // (3,1)
-    customDeck.add(new StandardPlayingCard(Ranks.FOUR, Suits.DIAMONDS)); // (3,2)
-    customDeck.add(new StandardPlayingCard(Ranks.FOUR, Suits.HEARTS));   // (3,3)
-
-    customDeck.add(new StandardPlayingCard(Ranks.JACK, Suits.HEARTS));   // (4,0)
-    customDeck.add(new StandardPlayingCard(Ranks.TEN, Suits.HEARTS));    // (4,1)
-    customDeck.add(new StandardPlayingCard(Ranks.NINE, Suits.HEARTS));   // (4,2)
-    customDeck.add(new StandardPlayingCard(Ranks.EIGHT, Suits.HEARTS));  // (4,3)
-    customDeck.add(new StandardPlayingCard(Ranks.QUEEN, Suits.HEARTS));  // (4,4)
-
-    customDeck.add(new StandardPlayingCard(Ranks.THREE, Suits.SPADES));  // (5,0)
-    customDeck.add(new StandardPlayingCard(Ranks.SEVEN, Suits.DIAMONDS)); // (5,1)
-    customDeck.add(new StandardPlayingCard(Ranks.THREE, Suits.DIAMONDS)); // (5,2)
-    customDeck.add(new StandardPlayingCard(Ranks.SEVEN, Suits.HEARTS));   // (5,3)
-    customDeck.add(new StandardPlayingCard(Ranks.SIX, Suits.SPADES));     // (5,4)
-    customDeck.add(new StandardPlayingCard(Ranks.SEVEN, Suits.SPADES));   // (5,5)
-
-    // Fill the remaining deck with arbitrary cards that won't contribute to the score
     for (int i = customDeck.size(); i < 52; i++) {
       customDeck.add(defaultDeck.get(i));
     }
 
-    // Start game with the custom deck (shuffle disabled)
     game.startGame(customDeck, false, 25);
 
-    // Place the cards in order from (0,0) top-left, row by row
     for (int row = 0; row < 6; row++) {
       for (int col = 0; col <= row; col++) {
         game.placeCardInPosition(0, row, col);
       }
     }
 
-    // Print the board state using the view’s toString() method
+    // Note: This assumes PokerTrianglesTextualView works with LoosePokerTriangles
     PokerTrianglesTextualView view = new PokerTrianglesTextualView(game);
     System.out.println(view.toString());
 
-    // Verify that the final score matches the expected 127 from the grading system
     assertEquals(127, game.getScore());
   }
 }
