@@ -4,15 +4,13 @@ import cs3500.pokerpolygons.model.hw02.Card;
 import cs3500.pokerpolygons.model.hw02.PokerPolygons;
 import cs3500.pokerpolygons.model.hw02.EmptyCard;
 
-import java.io.IOException;
 import java.util.List;
 
 /**
  * A String type view of a PokerRectangles game to view the implementation details in a String
  * format.
  */
-public class PokerRectanglesTextualView<C extends Card> implements PokerPolygonsTextualView {
-  private final PokerPolygons<C> model;
+public class PokerRectanglesTextualView<C extends Card> extends PokerBasicPolygonsTextualView<C> {
 
   /**
    * Constructs a PokerRectanglesTextualView with the given model.
@@ -20,10 +18,7 @@ public class PokerRectanglesTextualView<C extends Card> implements PokerPolygons
    * @throws IllegalArgumentException if the model is null
    */
   public PokerRectanglesTextualView(PokerPolygons<C> model) {
-    if (model == null) {
-      throw new IllegalArgumentException("Model cannot be null.");
-    }
-    this.model = model;
+    super(model);
   }
 
   /**
@@ -35,30 +30,13 @@ public class PokerRectanglesTextualView<C extends Card> implements PokerPolygons
   public String toString() {
     StringBuilder sb = new StringBuilder();
     int height = model.getHeight();
-    int width = model.getWidth();
 
     // Construct board representation
     for (int row = 0; row < height; row++) {
-      for (int col = 0; col < width; col++) {
-        C card = model.getCardAt(row, col);
-        String cardStr = (card == null || card.equals(EmptyCard.getEmptyCard())) ? "__" : formatCard(card);
-
-        // Ensure first column always has a leading space
-        if (col == 0) {
-          if (cardStr.length() == 3) {
-            sb.append(cardStr);
-          }
-          else if (cardStr.length() == 2) {
-            sb.append(" ").append(cardStr);
-          }
-          else {
-            sb.append(" ").append(cardStr);
-          }
-        } else if (cardStr.length() == 3) {  // If it's a "10" card, only one space before
-          sb.append(" ").append(cardStr);
-        } else {
-          sb.append("  ").append(cardStr); // Default: two spaces before every other column
-        }
+      for (int col = 0; col < model.getWidth(); col++) {
+        C card = getCardAtPosition(row, col);
+        String cardStr = (card == null) ? "__" : formatCard(card);
+        appendFormattedCell(sb, col, cardStr);
       }
       sb.append("\n");
     }
@@ -72,53 +50,4 @@ public class PokerRectanglesTextualView<C extends Card> implements PokerPolygons
     return sb.toString();
   }
 
-  /**
-   * Formats the player's hand with proper spacing.
-   */
-  private String formatHand(List<C> hand) {
-    StringBuilder sb = new StringBuilder();
-    boolean first = true;
-
-    for (C card : hand) {
-      if (!first) {
-        sb.append(", ");
-      }
-
-      String formattedCard = formatCard(card);
-
-      // Ensure 10-based cards align properly
-      if (formattedCard.length() == 3) {
-        sb.append(formattedCard);
-      } else {
-        sb.append(formattedCard);
-      }
-
-      first = false;
-    }
-    return sb.toString();
-  }
-
-  /**
-   * Formats a card for display, ensuring proper alignment for "10" and single-character cards.
-   */
-  private String formatCard(C card) {
-    String cardStr = card.toString();
-    return cardStr;
-  }
-
-  /**
-   * To append the current textual output to the given appendable.
-   *
-   * @param append is the argument that will get the textual view appended on to.
-   * @throws IllegalArgumentException if append is null
-   * @throws IOException              if the rendering fails for some reason
-   */
-  @Override
-  public void render(Appendable append) throws IOException {
-    if (append == null) {
-      throw new IllegalArgumentException("Append cannot be null.");
-    }
-
-    append.append(this.toString());
-  }
 }

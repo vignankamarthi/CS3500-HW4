@@ -125,18 +125,17 @@ public class PokerRectanglesTextualViewTest {
   @Test
   public void testRenderAppendsToEmptyAppendable() {
     PokerRectangles game = new PokerRectangles(5, 5, new Random(8));
-    List<PlayingCard> deck = getSampleDeck();
-    game.startGame(deck, true, 5);
+    game.startGame(getSampleDeck(), true, 4);
     PokerRectanglesTextualView<PlayingCard> view = new PokerRectanglesTextualView<>(game);
 
-    String expected = view.toString();
     StringBuilder output = new StringBuilder();
     try {
       view.render(output);
     } catch (IOException e) {
       fail("IOException should not have been thrown.");
     }
-    assertEquals(expected, output.toString());
+
+    assertEquals(game.toString(), output.toString());
   }
 
   /**
@@ -145,18 +144,17 @@ public class PokerRectanglesTextualViewTest {
   @Test
   public void testRenderAppendsToAppendable() {
     PokerRectangles game = new PokerRectangles(5, 5, new Random(8));
-    List<PlayingCard> deck = getSampleDeck();
-    game.startGame(deck, true, 5);
+    game.startGame(getSampleDeck(), true, 4);
     PokerRectanglesTextualView<PlayingCard> view = new PokerRectanglesTextualView<>(game);
 
-    String expected = "GameState: " + view.toString();
-    StringBuilder output = new StringBuilder("GameState: ");
+    StringBuilder output = new StringBuilder("State: ");
     try {
       view.render(output);
     } catch (IOException e) {
       fail("IOException should not have been thrown.");
     }
-    assertEquals(expected, output.toString());
+
+    assertEquals("State: " + game.toString(), output.toString());
   }
 
   /**

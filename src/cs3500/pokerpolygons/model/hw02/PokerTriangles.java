@@ -2,7 +2,6 @@ package cs3500.pokerpolygons.model.hw02;
 
 import java.util.Random;
 import cs3500.pokerpolygons.model.hw04.PokerBasicPolygons;
-import cs3500.pokerpolygons.model.hw04.PokerBasicScoring;
 import cs3500.pokerpolygons.model.hw04.PokerTrianglesScoring;
 
 /**
