@@ -80,7 +80,7 @@ public final class PokerPolygonsGame {
       if (args.length > 1) {
         handSize = Integer.parseInt(args[1]);
         if (handSize < 1) {
-          handSize = 1;
+          handSize = 1; // default
         }
       }
       if (args.length > 2) {
