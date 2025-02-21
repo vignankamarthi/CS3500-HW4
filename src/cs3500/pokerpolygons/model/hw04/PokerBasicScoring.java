@@ -238,7 +238,8 @@ public abstract class PokerBasicScoring {
    * Counts the occurrences of each rank in the given hand.
    *
    * @param hand the hand of cards to evaluate
-   * @return a map where the keys are ranks and the values are the number of occurrences of that rank
+   * @return a map where the keys are ranks and the values are the number of occurrences of that
+   *         rank
    */
   protected Map<Ranks, Integer> getRankCounts(List<PlayingCard> hand) {
     Map<Ranks, Integer> rankCounts = new HashMap<>();

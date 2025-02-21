@@ -118,7 +118,8 @@ public abstract class PokerBasicPolygons implements PokerPolygons<PlayingCard> {
       throw new IllegalArgumentException("Hand size must be positive.");
     }
     if (deck.size() < handSize + getTotalBoardSize()) {
-      throw new IllegalArgumentException("Deck size must be at least large enough to cover the hand and board fully: "
+      throw new IllegalArgumentException("Deck size must be at least large enough to cover the " +
+              "hand and board fully: "
               + (handSize + getTotalBoardSize()));
     }
     if (isGameStarted) {
@@ -221,7 +222,7 @@ public abstract class PokerBasicPolygons implements PokerPolygons<PlayingCard> {
   /**
    * To handle the exception if the game has started.
    *
-   * @throws IllegalStateException
+   * @throws IllegalStateException if the game has not started.
    */
   protected IllegalStateException gameHasNotStartedException() {
     if (!isGameStarted) {

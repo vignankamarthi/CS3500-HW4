@@ -1,6 +1,6 @@
 package cs3500.pokerpolygons.model.hw04;
-import java.util.Random;
 
+import java.util.Random;
 import cs3500.pokerpolygons.model.hw02.PokerTriangles;
 
 /**

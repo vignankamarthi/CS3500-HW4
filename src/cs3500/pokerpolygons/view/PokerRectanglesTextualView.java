@@ -2,9 +2,6 @@ package cs3500.pokerpolygons.view;
 
 import cs3500.pokerpolygons.model.hw02.Card;
 import cs3500.pokerpolygons.model.hw02.PokerPolygons;
-import cs3500.pokerpolygons.model.hw02.EmptyCard;
-
-import java.util.List;
 
 /**
  * A String type view of a PokerRectangles game to view the implementation details in a String

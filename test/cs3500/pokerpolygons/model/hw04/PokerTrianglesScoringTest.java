@@ -1,6 +1,5 @@
 package cs3500.pokerpolygons.model.hw04;
 
-import static org.junit.Assert.*;
 
 import java.util.Collections;
 import java.util.List;
@@ -12,6 +11,8 @@ import cs3500.pokerpolygons.model.hw02.PokerTriangles;
 import cs3500.pokerpolygons.model.hw02.Ranks;
 import cs3500.pokerpolygons.model.hw02.Suits;
 import cs3500.pokerpolygons.model.hw02.StandardPlayingCard;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * In-depth testing for PokerTriangles class including exceptions, general behavior,
@@ -255,10 +256,9 @@ public class PokerTrianglesScoringTest {
 
   /**
    * Row 3: Flush (20 pts), Row 4: Pair (2 pts) = total 22.
-   */
-  /**
    * Tests that a flush in row 5 (columns 1–5) and a pair in column 0 (rows 0–4)
    * yield a total score of 22 (flush = 20, pair = 2).
+   *
    */
   @Test
   public void testCompoundScoreFlushAndPair_Triangle() {
@@ -297,10 +297,9 @@ public class PokerTrianglesScoringTest {
 
   /**
    * Row 4: Flush (20 pts), Column 4: Straight (15 pts) = total 35.
-   */
-  /**
    * Tests that a flush in row 5 (using columns 1–5) and a straight in column 0 (using rows 0–4)
    * yield a total score of 35 (flush = 20, straight = 15) in a triangular game with side length 6.
+   *
    */
   @Test
   public void testCompoundScoreFlushAndStraight_Triangle() {

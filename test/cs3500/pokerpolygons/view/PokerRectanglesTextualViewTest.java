@@ -28,12 +28,10 @@ public class PokerRectanglesTextualViewTest {
     // Create an empty game (5 x 5 rectangle) using a seeded Random for deterministic behavior.
     PokerRectangles emptyGame = new PokerRectangles(5, 5, new Random(8));
     emptyGame.startGame(getSampleDeck(), true, 5);
-    PokerRectanglesTextualView<PlayingCard> emptyView = new PokerRectanglesTextualView<>(emptyGame);
 
     // Create a populated game (5 x 5 rectangle) with no shuffling.
     PokerRectangles populatedGame = new PokerRectangles(5, 5, new Random(8));
     populatedGame.startGame(getSampleDeck(), false, 5);
-    PokerRectanglesTextualView<PlayingCard> populatedView = new PokerRectanglesTextualView<>(populatedGame);
   }
 
   /**
@@ -54,8 +52,10 @@ public class PokerRectanglesTextualViewTest {
   /**
    * Tests that an empty 5x5 board is rendered exactly as expected.
    * Expected output:
-   * Each of the 5 rows has 5 cells displayed as "__", followed by a line for the deck and one for the hand.
-   * Since no board cards are drawn from the deck at game start, the deck remains at 52 - handSize = 47.
+   * Each of the 5 rows has 5 cells displayed as "__", followed by a line for the deck and one for
+   * the hand.
+   * Since no board cards are drawn from the deck at game start, the deck remains at 52 - handSize
+   * = 47.
    */
   @Test
   public void testEmptyBoardToString() {
@@ -73,7 +73,8 @@ public class PokerRectanglesTextualViewTest {
                     " __  __  __  __  __\n" +
                     " __  __  __  __  __\n" +
                     "Deck: 47\n" +
-                    "Hand: J♢, 8♢, 3♠, 2♣, Q♡"; // Adjust the hand string as per your seeded deck output.
+                    "Hand: J♢, 8♢, 3♠, 2♣, Q♡"; // Adjust the hand string as per your seeded deck
+    // output.
 
     String actual = view.toString();
     assertEquals(expected, actual);
@@ -133,7 +134,13 @@ public class PokerRectanglesTextualViewTest {
       fail("IOException should not have been thrown.");
     }
 
-    assertEquals(game.toString(), output.toString());
+    assertEquals(" __  __  __  __  __\n" +
+            " __  __  __  __  __\n" +
+            " __  __  __  __  __\n" +
+            " __  __  __  __  __\n" +
+            " __  __  __  __  __\n" +
+            "Deck: 48\n" +
+            "Hand: J♢, 8♢, 3♠, 2♣", output.toString());
   }
 
   /**
@@ -145,14 +152,20 @@ public class PokerRectanglesTextualViewTest {
     game.startGame(getSampleDeck(), true, 4);
     PokerRectanglesTextualView<PlayingCard> view = new PokerRectanglesTextualView<>(game);
 
-    StringBuilder output = new StringBuilder("State: ");
+    StringBuilder output = new StringBuilder("State:");
     try {
       view.render(output);
     } catch (IOException e) {
       fail("IOException should not have been thrown.");
     }
 
-    assertEquals("State: " + game.toString(), output.toString());
+    assertEquals("State: __  __  __  __  __\n" +
+            " __  __  __  __  __\n" +
+            " __  __  __  __  __\n" +
+            " __  __  __  __  __\n" +
+            " __  __  __  __  __\n" +
+            "Deck: 48\n" +
+            "Hand: J♢, 8♢, 3♠, 2♣", output.toString());
   }
 
   /**
@@ -161,7 +174,8 @@ public class PokerRectanglesTextualViewTest {
    */
   @Test
   public void testConstructorThrowsExceptionForNullModel() {
-    assertThrows(IllegalArgumentException.class, () -> new PokerRectanglesTextualView<PlayingCard>(null));
+    assertThrows(IllegalArgumentException.class,
+            () -> new PokerRectanglesTextualView<PlayingCard>(null));
   }
 
   /**

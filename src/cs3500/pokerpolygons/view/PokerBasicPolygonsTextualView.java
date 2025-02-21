@@ -79,7 +79,7 @@ public abstract class PokerBasicPolygonsTextualView<C extends Card> implements
       throw new IllegalArgumentException("Append cannot be null.");
     }
 
-    append.append(this.model.toString());
+    append.append(this.toString());
   }
 
   /**

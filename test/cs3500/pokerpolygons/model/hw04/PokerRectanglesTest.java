@@ -1,6 +1,5 @@
 package cs3500.pokerpolygons.model.hw04;
 
-import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,6 +14,11 @@ import cs3500.pokerpolygons.model.hw02.PokerPolygons;
 import cs3500.pokerpolygons.model.hw02.Ranks;
 import cs3500.pokerpolygons.model.hw02.StandardPlayingCard;
 import cs3500.pokerpolygons.model.hw02.Suits;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests for the PokerPolygons class including exceptions, general behavior,

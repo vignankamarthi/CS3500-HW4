@@ -650,6 +650,7 @@ public class PokerPolygonsIntegrationTests {
 
         @Override
         public void close() throws IOException {
+          throw new IOException("Readable input failure");
         }
       };
 

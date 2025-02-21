@@ -6,7 +6,13 @@ import cs3500.pokerpolygons.model.hw02.PlayingCard;
 import cs3500.pokerpolygons.model.hw02.PokerPolygons;
 import cs3500.pokerpolygons.model.hw02.PokerTriangles;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+/**
+ * To test the functioning fo th builder class, ensuring proper method chaining, adhering to
+ * assignment specifics, and proper exception handling.
+ */
 public class PokerPolygonsBuilderTest {
 
   /**

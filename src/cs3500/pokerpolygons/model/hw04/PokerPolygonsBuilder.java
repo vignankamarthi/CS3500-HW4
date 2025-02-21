@@ -23,7 +23,7 @@ public class PokerPolygonsBuilder<X extends PlayingCard> {
   private int height;
 
   /**
-   * Constructs a PokerPolygonsBuilder with the given default values:
+   * Constructs a PokerPolygonsBuilder with the given default values.
    * - Game type set to TRI (PokerTriangles)
    * - Side length set to 5 (minimum for PokerTriangles)
    * - Width and height set to 5 (default for PokerRectangles)

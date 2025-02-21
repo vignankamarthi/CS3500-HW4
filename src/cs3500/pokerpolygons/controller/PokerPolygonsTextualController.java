@@ -97,15 +97,15 @@ public class PokerPolygonsTextualController implements PokerPolygonsController {
   /**
    * To handle a null model or view in the playGame() method.
    *
-   * @throws IllegalArgumentException
+
    * @param model is the model of the game.
    * @param view is the view output of the game
    * @param <C> the type of the Card used in the model
    * @return null
-   *
+   * @throws IllegalArgumentException when the model or view is null
    */
-  private <C extends Card> IllegalArgumentException nullModelOrViewException
-  (PokerPolygons<C> model, PokerPolygonsTextualView view) {
+  private <C extends Card> IllegalArgumentException nullModelOrViewException(
+          PokerPolygons<C> model, PokerPolygonsTextualView view) {
     if (model == null || view == null) {
       throw new IllegalArgumentException("Model or view cannot be null.");
     }
@@ -133,8 +133,8 @@ public class PokerPolygonsTextualController implements PokerPolygonsController {
    * @param <C> extends the card
    * @return null
    */
-  private <C extends Card> IllegalStateException initializeGameExceptionPokerPolygons
-  (PokerPolygons<C> model,List<C> deck, boolean shuffle, int handSize) {
+  private <C extends Card> IllegalStateException initializeGameExceptionPokerPolygons(
+          PokerPolygons<C> model,List<C> deck, boolean shuffle, int handSize) {
     try {
       model.startGame(deck, shuffle, handSize);
     } catch (Exception e) {
@@ -176,6 +176,7 @@ public class PokerPolygonsTextualController implements PokerPolygonsController {
         }
         return num;
       } catch (NumberFormatException e) {
+        throw new NumberFormatException("Invalid Natural Number: " + token);
       }
     }
     return null;

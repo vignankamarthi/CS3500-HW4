@@ -131,7 +131,8 @@ public class PokerRectangles extends PokerBasicPolygons {
     gameHasNotStartedException();
 
     if (cardIdx < 0 || cardIdx >= hand.size()) {
-      throw new IllegalArgumentException("Card index in the hand is out of bounds: " + (cardIdx + 1));
+      throw new IllegalArgumentException("Card index in the hand is out of bounds: "
+              + (cardIdx + 1));
     }
     if (row < 0 || col < 0 || row >= height || col >= width) {
       throw new IllegalArgumentException("Row or column out of bounds: " + row + ", " + col);

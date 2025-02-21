@@ -33,7 +33,8 @@ public class LoosePokerTrianglesScoringTest {
     // Shuffle deck before adding custom straight flush cards.
     Collections.shuffle(deck);
 
-    // Insert a middle straight flush (5-6-7-8-9 of DIAMONDS, consecutive for traditional, skipped for loose).
+    // Insert a middle straight flush (5-6-7-8-9 of DIAMONDS, consecutive for traditional,
+    // skipped for loose).
     deck.add(0, new StandardPlayingCard(Ranks.FIVE, Suits.DIAMONDS));
     deck.add(0, new StandardPlayingCard(Ranks.SIX, Suits.DIAMONDS));
     deck.add(0, new StandardPlayingCard(Ranks.SEVEN, Suits.DIAMONDS));
@@ -245,7 +246,8 @@ public class LoosePokerTrianglesScoringTest {
   }
 
   /**
-   * Tests a jumped straight (2-4-6-8-10 of mixed suits) and a normal straight (5-6-7-8-9 of mixed suits),
+   * Tests a jumped straight (2-4-6-8-10 of mixed suits) and a normal straight
+   * (5-6-7-8-9 of mixed suits),
    * expecting 15 points each, totaling 30.
    */
   @Test
@@ -289,7 +291,6 @@ public class LoosePokerTrianglesScoringTest {
   /**
    * Tests a color flush (5 red cards, not straight) and a standard flush (6 hearts, not straight)
    * in a triangular game of side length 6.
-   *
    * Expected total score: 20 (color flush) + 20 (standard flush) = 40.
    */
   @Test
@@ -354,7 +355,8 @@ public class LoosePokerTrianglesScoringTest {
     deck.add(0, new StandardPlayingCard(Ranks.EIGHT, Suits.DIAMONDS));
     deck.add(0, new StandardPlayingCard(Ranks.TEN, Suits.HEARTS));
 
-    // These cards form a color flush: 5 red cards (hearts and diamonds) that do not form a straight.
+    // These cards form a color flush: 5 red cards (hearts and diamonds) that do not form a
+    // straight.
     deck.add(0, new StandardPlayingCard(Ranks.ACE, Suits.HEARTS));
     deck.add(0, new StandardPlayingCard(Ranks.KING, Suits.DIAMONDS));
     deck.add(0, new StandardPlayingCard(Ranks.QUEEN, Suits.HEARTS));
@@ -383,7 +385,8 @@ public class LoosePokerTrianglesScoringTest {
   }
 
   /**
-   * Tests a jumped straight (2-4-6-8-10 of mixed suits) and a standard flush (5 hearts, not straight),
+   * Tests a jumped straight (2-4-6-8-10 of mixed suits) and a standard flush (5 hearts,
+   * not straight),
    * expecting 15 and 20 points respectively, totaling 35.
    */
   @Test
@@ -432,7 +435,8 @@ public class LoosePokerTrianglesScoringTest {
   }
 
   /**
-   * Tests a normal straight (5-6-7-8-9 of mixed suits and colors) and a color flush (5 red cards, not straight),
+   * Tests a normal straight (5-6-7-8-9 of mixed suits and colors) and a color flush (5 red cards,
+   * not straight),
    * expecting 15 and 20 points, totaling 35.
    */
   @Test
@@ -476,7 +480,8 @@ public class LoosePokerTrianglesScoringTest {
   }
 
   /**
-   * Tests a normal straight (5-6-7-8-9 of mixed suits and colors) and a standard flush (5 hearts, not straight),
+   * Tests a normal straight (5-6-7-8-9 of mixed suits and colors) and a standard flush
+   * (5 hearts, not straight),
    * expecting 15 and 20 points, totaling 35.
    */
   @Test
@@ -520,7 +525,8 @@ public class LoosePokerTrianglesScoringTest {
   }
 
   /**
-   * Tests a jumped straight (2-4-6-8-10 of mixed suits) and three of a kind (three Aces, two fillers),
+   * Tests a jumped straight (2-4-6-8-10 of mixed suits) and three of a kind (three Aces,
+   * two fillers),
    * expecting 15 and 10 points, totaling 25.
    */
   @Test

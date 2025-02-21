@@ -1,6 +1,5 @@
 package cs3500.pokerpolygons.model.hw04;
 
-import static org.junit.Assert.*;
 
 import java.util.Collections;
 import java.util.List;
@@ -11,6 +10,8 @@ import cs3500.pokerpolygons.model.hw02.PlayingCard;
 import cs3500.pokerpolygons.model.hw02.Ranks;
 import cs3500.pokerpolygons.model.hw02.Suits;
 import cs3500.pokerpolygons.model.hw02.StandardPlayingCard;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * In-depth testing for the PokerRectanglesScoring class for every type of hand and compound
