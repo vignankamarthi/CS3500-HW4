@@ -174,8 +174,8 @@ public class PokerRectanglesTextualViewTest {
    */
   @Test
   public void testConstructorThrowsExceptionForNullModel() {
-    assertThrows(IllegalArgumentException.class,
-            () -> new PokerRectanglesTextualView<PlayingCard>(null));
+    assertThrows(IllegalArgumentException.class, () ->
+            new PokerRectanglesTextualView<PlayingCard>(null));
   }
 
   /**
